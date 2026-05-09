@@ -1,0 +1,25 @@
+# Dependencias
+node_modules/
+.npm
+
+# Build outputs
+dist/
+.angular/
+
+# Archivos de entorno (contienen API keys)
+src/environments/environment.prod.ts
+
+# Cache
+.cache/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

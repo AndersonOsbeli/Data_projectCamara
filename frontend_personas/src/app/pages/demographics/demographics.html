@@ -1,0 +1,56 @@
+<div class="demographics-container">
+  <div class="header">
+    <h1>Análisis Demográfico</h1>
+    <p>Distribución de género y horarios (excluyendo mascotas)</p>
+  </div>
+
+  <div class="insights-grid">
+    <div class="insight-card">
+      <div class="icon orange"><i class="bi bi-clock-history"></i></div>
+      <div class="info">
+        <h3>{{ busiestHour }}</h3>
+        <p>Hora Pico de Afluencia</p>
+      </div>
+    </div>
+    
+    <div class="insight-card">
+      <div class="icon pink"><i class="bi bi-gender-female"></i></div>
+      <div class="info">
+        <h3>{{ mostWomenLocation }}</h3>
+        <p>Mayor Concentración (Mujeres)</p>
+      </div>
+    </div>
+
+    <div class="insight-card">
+      <div class="icon purple"><i class="bi bi-gender-male"></i></div>
+      <div class="info">
+        <h3>{{ mostMenLocation }}</h3>
+        <p>Mayor Concentración (Hombres)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-container">
+    <div class="chart-box full-width">
+      <h2>Tráfico a lo Largo del Día (Horas Pico)</h2>
+      <div class="canvas-wrapper">
+        <canvas baseChart
+          [data]="lineChartData"
+          [options]="lineChartOptions"
+          [type]="lineChartType">
+        </canvas>
+      </div>
+    </div>
+
+    <div class="chart-box full-width">
+      <h2>Comparativa de Género por Ubicación</h2>
+      <div class="canvas-wrapper">
+        <canvas baseChart
+          [data]="barChartData"
+          [options]="barChartOptions"
+          [type]="barChartType">
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>

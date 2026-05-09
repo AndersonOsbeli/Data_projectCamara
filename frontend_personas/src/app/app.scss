@@ -1,0 +1,14 @@
+.app-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.content-area {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  height: 100%;
+}

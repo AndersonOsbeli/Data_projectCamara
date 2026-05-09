@@ -1,0 +1,97 @@
+.demographics-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+}
+
+.header h1 {
+  font-size: 2rem;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.header p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.insight-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.insight-card .icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.icon.orange { background: rgba(253, 152, 41, 0.2); color: #fd9829; }
+.icon.pink { background: rgba(245, 66, 164, 0.2); color: #f542a4; }
+.icon.purple { background: rgba(81, 66, 245, 0.2); color: #5142f5; }
+
+.insight-card .info h3 {
+  font-size: 1.4rem;
+  margin: 0;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.insight-card .info p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+}
+
+.charts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.chart-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.chart-box h2 {
+  font-size: 1.2rem;
+  margin: 0 0 20px 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.canvas-wrapper {
+  position: relative;
+  height: 350px;
+  width: 100%;
+}

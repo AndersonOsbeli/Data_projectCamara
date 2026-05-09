@@ -1,0 +1,41 @@
+<nav class="sidebar">
+  <ul>
+    <li>
+      <a routerLink="/dashboard" routerLinkActive="active">
+        <span class="icon"><i class="bi bi-grid-1x2"></i></span>
+        <span class="text">Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/cameras" routerLinkActive="active">
+        <span class="icon"><i class="bi bi-camera-video"></i></span>
+        <span class="text">Cámaras</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/demographics" routerLinkActive="active">
+        <span class="icon"><i class="bi bi-people"></i></span>
+        <span class="text">Demografía</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/reports" routerLinkActive="active">
+        <span class="icon"><i class="bi bi-file-earmark-bar-graph"></i></span>
+        <span class="text">Reportes</span>
+      </a>
+    </li>
+    <li class="separator"></li>
+    <li>
+      <a routerLink="/settings" routerLinkActive="active">
+        <span class="icon"><i class="bi bi-gear"></i></span>
+        <span class="text">Configuración</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" (click)="logout($event)">
+        <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
+        <span class="text">Cerrar Sesión</span>
+      </a>
+    </li>
+  </ul>
+</nav>

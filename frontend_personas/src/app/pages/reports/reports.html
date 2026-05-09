@@ -1,0 +1,98 @@
+<div class="reports-container">
+  <div class="header-section">
+    <div class="titles">
+      <h1>Reportes e Historial</h1>
+      <p>Gestión, filtrado y exportación de datos de detección (Personas)</p>
+    </div>
+    <button class="export-btn" (click)="exportToCSV()" [disabled]="filteredRegistros.length === 0 || isLoading">
+      <i class="bi bi-file-earmark-spreadsheet-fill"></i> Exportar a CSV
+    </button>
+  </div>
+
+  <div class="filters-panel glass-panel">
+    <div class="filter-group search-group">
+      <label><i class="bi bi-search"></i> Buscar</label>
+      <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" placeholder="Buscar por ID...">
+    </div>
+
+    <div class="filter-group">
+      <label><i class="bi bi-calendar3"></i> Fecha</label>
+      <input type="date" [(ngModel)]="filterDate" (ngModelChange)="applyFilters()">
+    </div>
+
+    <div class="filter-group">
+      <label><i class="bi bi-geo-alt-fill"></i> Lugar</label>
+      <select [(ngModel)]="filterLugar" (ngModelChange)="applyFilters()">
+        <option value="">Todos los lugares</option>
+        @for (lugar of uniqueLocations; track lugar) {
+          <option [value]="lugar">{{ lugar }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label><i class="bi bi-gender-ambiguous"></i> Género</label>
+      <select [(ngModel)]="filterGender" (ngModelChange)="applyFilters()">
+        <option value="">Todos</option>
+        <option value="masculino">Hombres</option>
+        <option value="femenino">Mujeres</option>
+      </select>
+    </div>
+
+    <div class="filter-actions">
+      <button class="clear-btn" (click)="clearFilters()">Limpiar Filtros</button>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="record-count">
+      <i class="bi bi-list-check"></i> Mostrando <strong>{{ filteredRegistros.length }}</strong> registros encontrados
+    </div>
+  </div>
+
+  <div class="table-section glass-panel">
+    @if (isLoading) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando historial...</p>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>ID Registro</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Género</th>
+              <th>Lugar</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (reg of paginatedRegistros; track reg.id_registro) {
+              <tr>
+                <td><span class="id-badge">{{reg.id_registro}}</span></td>
+                <td>{{reg.fecha}}</td>
+                <td>{{reg.hora}}</td>
+                <td>{{reg.genero}}</td>
+                <td>{{reg.lugar}}</td>
+              </tr>
+            }
+            @if (paginatedRegistros.length === 0) {
+              <tr>
+                <td colspan="5" class="empty-state">No se encontraron registros con los filtros actuales.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"><i class="bi bi-chevron-left"></i> Anterior</button>
+        <span>Página {{currentPage}} de {{totalPages}}</span>
+        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Siguiente <i class="bi bi-chevron-right"></i></button>
+      </div>
+    }
+  </div>
+</div>

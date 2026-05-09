@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+:root {
+  --bg-color: #0d0f23; /* Dark blue/purple background */
+  --sidebar-bg: #ffffff; /* White sidebar */
+  --text-color: #333333;
+  --active-bg: var(--bg-color);
+  --active-text: #ffffff;
+  --hover-bg: #f3f4f6;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: #fff;
+  min-height: 100vh;
+  /* Add a starry background effect using radial gradients */
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+}

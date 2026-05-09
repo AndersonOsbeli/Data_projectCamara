@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.env
+.venv/
+venv/
+env/
+
+# Modelos ML grandes (usar Git LFS si se necesitan)
+*.caffemodel
+*.pt
+*.onnx
+*.pb
+
+# Archivos sensibles
+personasdashboard_firebase.json
+*.json
+
+# Excel / datos
+*.xlsx
+*.csv
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user

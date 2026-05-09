@@ -1,0 +1,144 @@
+<div class="camera-dashboard-container">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1>Monitoreo de Cámaras IA</h1>
+      <p>Visualización y análisis en tiempo real</p>
+    </div>
+    <div class="status-badges">
+      <span class="badge" [class.active]="cameraRunning">
+        <i class="bi bi-camera-video-fill"></i> {{cameraRunning ? 'Cámara Activa' : 'Conectando...'}}
+      </span>
+      <span class="badge" [class.active]="detectionRunning">
+        <i class="bi bi-cpu-fill"></i> {{detectionRunning ? 'IA Activa' : 'IA Inactiva'}}
+      </span>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <!-- Video Section -->
+    <section class="video-section glass-panel">
+      <div class="video-wrapper">
+        @if (cameraRunning) {
+          <iframe [src]="streamUrl" class="live-video" frameborder="0" scrolling="no" title="Live Camera Feed"></iframe>
+        } @else {
+          <div class="video-loading">
+            <div class="spinner"></div>
+            <p>Conectando con la cámara...</p>
+          </div>
+        }
+      </div>
+
+      <div class="video-controls">
+        <button type="button" class="control-btn accent" [class.active]="detectionRunning" (click)="toggleDetection()" [disabled]="!cameraRunning">
+          <i class="bi" [class.bi-eye-fill]="!detectionRunning" [class.bi-eye-slash-fill]="detectionRunning"></i>
+          <span>{{detectionRunning ? 'Detener Detección IA' : 'Iniciar Detección IA'}}</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Right Sidebar -->
+    <aside class="live-log-section glass-panel">
+      <h3><i class="bi bi-activity"></i> Actividad en Vivo</h3>
+      <div class="log-feed">
+        @if (recentRegistros.length === 0) {
+          <p class="empty-state">No hay actividad reciente.</p>
+        }
+        @for (log of recentRegistros.slice(0, 5); track log.id_registro) {
+          <div class="log-item">
+            <div class="log-icon" [class.persona]="log.clase === 'persona'" [class.animal]="log.clase === 'animal'">
+              <i class="bi" [class.bi-person-fill]="log.clase === 'persona'" [class.bi-bug-fill]="log.clase === 'animal'"></i>
+            </div>
+            <div class="log-details">
+              <strong>{{log.clase | titlecase}}</strong> detectado
+              <span class="log-meta">{{log.genero !== 'N/A' && log.genero ? ' (' + log.genero + ')' : ''}}</span>
+              <div class="log-time">{{log.hora}} - {{log.lugar}}</div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Ubicación -->
+      <div class="location-config">
+        <h4><i class="bi bi-geo-alt"></i> Ubicación de Cámara</h4>
+        <div class="location-input-group">
+          <input type="text" [(ngModel)]="locationInput" placeholder="Nombre del lugar">
+          <button (click)="updateLocation()" [disabled]="locationInput === currentLocation" [class.btn-active]="locationInput !== currentLocation">
+            <i class="bi bi-check-lg"></i> Guardar
+          </button>
+        </div>
+      </div>
+
+      <!-- Fuente de Video -->
+      <div class="source-config">
+        <h4><i class="bi bi-camera-video"></i> Fuente de Video</h4>
+
+        <div class="source-selection-grid">
+          <div class="source-card" [class.active]="cameraType === 'local'" (click)="cameraType = 'local'">
+            <div class="card-icon"><i class="bi bi-laptop"></i></div>
+            <div class="card-text">Cámara PC</div>
+          </div>
+          <div class="source-card" [class.active]="cameraType === 'ip'" (click)="cameraType = 'ip'">
+            <div class="card-icon"><i class="bi bi-phone"></i></div>
+            <div class="card-text">DroidCam</div>
+          </div>
+        </div>
+
+        @if (cameraType === 'ip') {
+          <div class="ip-input-container">
+            <div class="input-wrapper">
+              <i class="bi bi-broadcast"></i>
+              <input type="text" [(ngModel)]="ipAddress" placeholder="http://192.168.x.x:4747/video">
+            </div>
+          </div>
+        }
+
+        <button class="primary-action-btn" (click)="changeCameraSource()">
+          <i class="bi bi-arrow-repeat"></i>
+          <span>Cambiar / Conectar</span>
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Table Section -->
+  <section class="table-section glass-panel mt-4">
+    <div class="table-header">
+      <h3><i class="bi bi-table"></i> Registros Recientes</h3>
+    </div>
+
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>ID Registro</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Clase</th>
+            <th>Género</th>
+            <th>Lugar</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (reg of paginatedRegistros; track reg.id_registro) {
+            <tr>
+              <td><span class="id-badge">{{reg.id_registro}}</span></td>
+              <td>{{reg.fecha}}</td>
+              <td>{{reg.hora}}</td>
+              <td><span class="class-badge" [class]="reg.clase">{{reg.clase | titlecase}}</span></td>
+              <td>{{reg.genero}}</td>
+              <td>{{reg.lugar}}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"><i class="bi bi-chevron-left"></i> Anterior</button>
+      <span>Página {{currentPage}} de {{totalPages}}</span>
+      <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Siguiente <i class="bi bi-chevron-right"></i></button>
+    </div>
+  </section>
+</div>

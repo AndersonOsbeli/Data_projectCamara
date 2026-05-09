@@ -1,0 +1,76 @@
+<div class="dashboard">
+  <div class="header">
+    <h1>Dashboard de Detección</h1>
+    <p>Visualización de demografía por cámaras IA</p>
+  </div>
+
+  <div class="cards-container">
+    <div class="stat-card">
+      <div class="icon blue"><i class="bi bi-people-fill"></i></div>
+      <div class="info">
+        <h3>{{ summary.total }}</h3>
+        <p>Total Detecciones</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="icon purple"><i class="bi bi-gender-male"></i></div>
+      <div class="info">
+        <h3>{{ summary.males }}</h3>
+        <p>Hombres</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="icon pink"><i class="bi bi-gender-female"></i></div>
+      <div class="info">
+        <h3>{{ summary.females }}</h3>
+        <p>Mujeres</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-container">
+    <div class="chart-box">
+      <h2>Distribución por Género</h2>
+      <div class="canvas-wrapper doughnut-wrapper">
+        <canvas baseChart
+          [data]="doughnutChartData"
+          [type]="doughnutChartType"
+          [options]="doughnutChartOptions">
+        </canvas>
+      </div>
+    </div>
+
+    <div class="chart-box">
+      <div class="chart-box-header">
+        <div class="chart-title-group">
+          <h2>Detecciones por Ubicación</h2>
+          <span class="badge" *ngIf="!selectedLocation">Top 3</span>
+        </div>
+        <div class="filter-controls">
+          <select
+            id="location-filter"
+            [(ngModel)]="selectedLocation"
+            (ngModelChange)="applyFilter()"
+            class="location-select">
+            <option value="">Todas las ubicaciones (Top 3)</option>
+            <option *ngFor="let loc of allLocationsData" [value]="loc.name">
+              {{ loc.name }} ({{ loc.count }})
+            </option>
+          </select>
+          <button *ngIf="selectedLocation" class="clear-btn" (click)="clearFilter()">
+            <i class="bi bi-x-circle"></i>
+          </button>
+        </div>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas baseChart
+          [data]="barChartData"
+          [options]="barChartOptions"
+          [type]="barChartType">
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>
