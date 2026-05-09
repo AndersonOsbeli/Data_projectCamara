@@ -14,9 +14,7 @@ build/
 venv/
 env/
 
-# Modelos ML grandes (usar Git LFS si se necesitan)
-*.caffemodel
-*.pt
+# Modelos ML grandes (manejados con Git LFS)
 *.onnx
 *.pb
 
