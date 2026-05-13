@@ -4,10 +4,50 @@
       <h1>Reportes e Historial</h1>
       <p>Gestión, filtrado y exportación de datos de detección (Personas)</p>
     </div>
-    <button class="export-btn" (click)="exportToCSV()" [disabled]="filteredRegistros.length === 0 || isLoading">
-      <i class="bi bi-file-earmark-spreadsheet-fill"></i> Exportar a CSV
-    </button>
+    <div class="actions">
+      <button class="export-btn" (click)="exportToCSV()" [disabled]="filteredRegistros.length === 0 || isLoading">
+        <i class="bi bi-file-earmark-spreadsheet-fill"></i> Exportar a CSV
+      </button>
+      <button class="email-btn" (click)="openEmailModal()">
+        <i class="bi bi-envelope-fill"></i> Enviar por Correo
+      </button>
+    </div>
   </div>
+
+  <!-- Modal para Enviar Correo -->
+  @if (isEmailModalOpen) {
+  <div class="modal-overlay">
+    <div class="modal-content glass-panel">
+      <h2>Enviar Reporte Final</h2>
+      <p>Configura el envío del reporte consolidado.</p>
+      
+      <div class="form-group">
+        <label>Correo Electrónico Destino</label>
+        <input type="email" [(ngModel)]="emailDestination" placeholder="ejemplo@correo.com">
+      </div>
+      
+      <div class="form-group">
+        <label>Periodo del Reporte</label>
+        <select [(ngModel)]="emailPeriod">
+          <option [value]="1">Últimas 24 horas (1 día)</option>
+          <option [value]="3">Últimos 3 días</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button class="cancel-btn" (click)="closeEmailModal()">Cancelar</button>
+        <button class="send-btn" (click)="sendEmailReport()" [disabled]="isSendingEmail">
+          @if (isSendingEmail) {
+            <span class="spinner-small"></span> Enviando...
+          } @else {
+            <i class="bi bi-send-fill"></i> Enviar Reporte
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
 
   <div class="filters-panel glass-panel">
     <div class="filter-group search-group">

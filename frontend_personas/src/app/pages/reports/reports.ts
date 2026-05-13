@@ -136,4 +136,38 @@ export class Reports implements OnInit {
     link.click();
     document.body.removeChild(link);
   }
+
+  // --- Email Report Logic ---
+  isEmailModalOpen = false;
+  emailDestination = '';
+  emailPeriod = 1; // 1 or 3
+  isSendingEmail = false;
+
+  openEmailModal() {
+    this.isEmailModalOpen = true;
+  }
+
+  closeEmailModal() {
+    this.isEmailModalOpen = false;
+  }
+
+  sendEmailReport() {
+    if (!this.emailDestination || !this.emailDestination.includes('@')) {
+      alert('Por favor, ingresa un correo electrónico válido.');
+      return;
+    }
+
+    this.isSendingEmail = true;
+    this.dataService.sendReportEmail(this.emailDestination, this.emailPeriod).subscribe({
+      next: (res) => {
+        alert(res.message || 'Reporte enviado con éxito.');
+        this.isSendingEmail = false;
+        this.closeEmailModal();
+      },
+      error: (err) => {
+        alert('Error al enviar el correo: ' + (err.error?.detail || err.message));
+        this.isSendingEmail = false;
+      }
+    });
+  }
 }

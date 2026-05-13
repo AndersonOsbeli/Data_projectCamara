@@ -190,6 +190,173 @@ async def eliminar_registro(id_registro: str):
     # Ruta temporal SIN PROTECCIÓN
     return {"message": "Registro eliminado"}
 
+import smtplib
+from email.message import EmailMessage
+from datetime import timedelta
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER
+
+class EmailReportSchema(BaseModel):
+    email: str
+    period_days: int
+
+@app.post("/api/reports/email")
+async def send_report_email(data: EmailReportSchema):
+    try:
+        if not os.path.exists(DB_FILE):
+            raise HTTPException(status_code=404, detail="No hay datos registrados aún.")
+            
+        df = pd.read_excel(DB_FILE)
+        df = df.fillna("")
+        df['fecha'] = pd.to_datetime(df['fecha'])
+        
+        # Filtrar por fecha
+        now_date = datetime.now()
+        start_date = now_date - timedelta(days=data.period_days)
+        df_filtered = df[df['fecha'] >= start_date].copy()
+        
+        if df_filtered.empty:
+            raise HTTPException(status_code=404, detail=f"No hay registros en los últimos {data.period_days} días.")
+            
+        # Resumen: Asegurar que coincida "Masculino", "Hombre", "Femenino", "Mujer", ignorando mayúsculas/espacios
+        df_personas = df_filtered[df_filtered['clase'].astype(str).str.strip().str.lower() == 'persona']
+        total_personas = len(df_personas)
+        
+        generos = df_personas['genero'].astype(str).str.strip().str.lower()
+        hombres = len(df_personas[generos.isin(['hombre', 'masculino', 'm', 'h'])])
+        mujeres = len(df_personas[generos.isin(['mujer', 'femenino', 'f'])])
+        
+        df_filtered['fecha'] = df_filtered['fecha'].dt.strftime("%Y-%m-%d")
+
+        # --- NO MÁS ARCHIVOS ADJUNTOS (Evita SPAM) ---
+        # En su lugar, vamos a incrustar los últimos 50 registros directamente en el cuerpo del correo
+        recent_df = df_filtered.tail(50).iloc[::-1]
+        filas_html = ""
+        for _, row in recent_df.iterrows():
+            filas_html += f"""
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 13px;">{row['id_registro']}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 13px;">{row['fecha']}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 13px;">{row['hora']}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 13px;">{row['genero']}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 13px;">{row['lugar']}</td>
+            </tr>
+            """
+            
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        from email.utils import formataddr, formatdate, make_msgid
+        
+        # ==========================================
+        # CONFIGURACIÓN DE CORREO (Ajustar por el usuario)
+        # ==========================================
+        REMITENTE = "annder795@gmail.com" # CAMBIAR
+        PASSWORD = "jiwp wgrv snfd dmjh" # CAMBIAR - Usar contraseña de aplicación de Google
+        
+        # 1. Contenedor Raíz (Alternative directamente, sin Mixed porque no hay adjuntos)
+        msg = MIMEMultipart('alternative')
+        
+        # 2. Cabeceras Profesionales
+        msg['Subject'] = f"Reporte Analítico de Monitoreo - Últimos {data.period_days} Días"
+        msg['From'] = formataddr(('Departamento de Análisis de Datos', REMITENTE))
+        msg['To'] = formataddr(('Administración', data.email))
+        msg['Date'] = formatdate(localtime=True)
+        msg['Message-ID'] = make_msgid(domain="sistema.corporativo")
+        msg['Reply-To'] = REMITENTE
+        msg['X-Priority'] = '3 (Normal)'
+        
+        # 3.1 Versión Texto Plano
+        texto_plano = f"""Estimado(a),
+        
+Este es el informe analítico de detecciones de los últimos {data.period_days} días.
+
+RESUMEN:
+- Total: {total_personas}
+- Hombres: {hombres}
+- Mujeres: {mujeres}
+
+Atentamente,
+Departamento de Seguridad
+"""
+        msg.attach(MIMEText(texto_plano, 'plain', 'utf-8'))
+        
+        # 3.2 Versión HTML con la tabla incrustada
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+        </head>
+        <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333333; line-height: 1.6; background-color: #f9f9f9; padding: 20px; margin: 0;">
+            <div style="max-width: 650px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #e0e0e0; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <div style="border-bottom: 2px solid #291aeb; padding-bottom: 15px; margin-bottom: 20px;">
+                    <h2 style="color: #1a1c33; margin: 0; font-size: 22px;">Reporte Analítico de Monitoreo</h2>
+                    <p style="color: #666666; margin: 5px 0 0 0; font-size: 14px;">Generado automáticamente por el Sistema IA</p>
+                </div>
+                
+                <p style="font-size: 15px;">Estimado(a), a continuación se presenta el informe correspondiente a los últimos <b>{data.period_days} días</b>.</p>
+                
+                <div style="background-color: #f5f7ff; padding: 15px; border-radius: 6px; margin: 25px 0;">
+                    <h3 style="margin-top: 0; color: #291aeb; font-size: 16px;">Resumen Ejecutivo</h3>
+                    <table width="100%" cellpadding="5" cellspacing="0" style="font-size: 14px;">
+                        <tr>
+                            <td width="50%"><strong>Total de flujos registrados:</strong></td>
+                            <td width="50%"><strong>{total_personas}</strong></td>
+                        </tr>
+                        <tr><td>Hombres:</td><td>{hombres}</td></tr>
+                        <tr><td>Mujeres:</td><td>{mujeres}</td></tr>
+                    </table>
+                </div>
+                
+                <h3 style="color: #333; margin-top: 30px; font-size: 16px;">Últimos {len(recent_df)} Registros Detectados</h3>
+                <table width="100%" cellpadding="0" cellspacing="0" style="text-align: left; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #1a1c33; color: #ffffff;">
+                            <th style="padding: 10px; font-size: 13px; border-radius: 4px 0 0 4px;">ID</th>
+                            <th style="padding: 10px; font-size: 13px;">Fecha</th>
+                            <th style="padding: 10px; font-size: 13px;">Hora</th>
+                            <th style="padding: 10px; font-size: 13px;">Género</th>
+                            <th style="padding: 10px; font-size: 13px; border-radius: 0 4px 4px 0;">Lugar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filas_html}
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eeeeee; font-size: 12px; color: #888888;">
+                    <p style="margin: 0;"><strong>Departamento de Seguridad y Análisis</strong></p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        msg.attach(MIMEText(html, 'html', 'utf-8'))
+        
+        # Enviar correo usando STARTTLS (Puerto 587) - Mejor reputación en Gmail
+        try:
+            with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+                smtp.ehlo()
+                smtp.starttls() # Encriptación moderna
+                smtp.ehlo()
+                smtp.login(REMITENTE, PASSWORD)
+                smtp.send_message(msg)
+        except Exception as e:
+            print("Error SMTP:", e)
+            return {"status": "error", "message": "No se pudo enviar el correo. Revisa las credenciales SMTP en el backend."}
+            
+        return {"status": "ok", "message": f"Reporte enviado con éxito a {data.email}"}
+        
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

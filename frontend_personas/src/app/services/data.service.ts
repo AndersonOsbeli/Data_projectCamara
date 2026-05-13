@@ -66,4 +66,9 @@ export class DataService {
       })
     );
   }
+
+  sendReportEmail(email: string, periodDays: number): Observable<any> {
+    const url = 'http://localhost:8000/api/reports/email';
+    return this.http.post(url, { email, period_days: periodDays });
+  }
 }
