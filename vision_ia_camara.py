@@ -112,6 +112,9 @@ class SeniorVisionSystem:
 
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        cap.set(cv2.CAP_PROP_FPS, 30)
+        # Asegurar orientación correcta (deshabilitar rotación automática)
+        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
         while self.is_camera_running:
             try:
@@ -124,6 +127,10 @@ class SeniorVisionSystem:
             if not ret:
                 time.sleep(0.1)
                 continue
+
+            # Voltear horizontalmente (efecto espejo) solo para cámara local
+            if isinstance(self.camera_index, int):
+                frame = cv2.flip(frame, 1)
 
             if self.is_detection_running:
                 results = self.yolo(frame, classes=[0, 15, 16], verbose=False)

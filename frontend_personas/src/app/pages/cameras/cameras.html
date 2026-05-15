@@ -20,7 +20,7 @@
     <section class="video-section glass-panel">
       <div class="video-wrapper">
         @if (cameraRunning) {
-          <iframe [src]="streamUrl" class="live-video" frameborder="0" scrolling="no" title="Live Camera Feed"></iframe>
+          <img [src]="streamUrl" class="live-video" alt="Live Camera Feed">
         } @else {
           <div class="video-loading">
             <div class="spinner"></div>

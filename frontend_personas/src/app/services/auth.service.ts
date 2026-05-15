@@ -1,53 +1,165 @@
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
-import { Auth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from '@angular/fire/auth';
+import {
+  Injectable,
+  inject,
+  PLATFORM_ID
+} from '@angular/core';
+
+import {
+  isPlatformBrowser
+} from '@angular/common';
+
+import {
+  HttpClient
+} from '@angular/common/http';
+
+import {
+  Observable,
+  BehaviorSubject
+} from 'rxjs';
+
+import {
+  Auth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut
+} from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private loggedIn = new BehaviorSubject<boolean>(false);
-  isLoggedIn$ = this.loggedIn.asObservable();
+
+  private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
-  private auth = inject(Auth);
+  private fireAuth = inject(Auth);
+
+  apiUrl = 'http://127.0.0.1:8000/api';
+
+  private loggedInSubject =
+    new BehaviorSubject<boolean>(false);
+
+  isLoggedIn$ =
+    this.loggedInSubject.asObservable();
 
   constructor() {
+
+    // Evitar error SSR
     if (isPlatformBrowser(this.platformId)) {
-      // Sincroniza el estado con Firebase Auth
-      onAuthStateChanged(this.auth, (user) => {
-        this.loggedIn.next(!!user);
-        localStorage.setItem('isLoggedIn', user ? 'true' : 'false');
-      });
+      const usuario = localStorage.getItem('usuario');
+      this.loggedInSubject.next(!!usuario);
     }
   }
 
-  get isLoggedIn(): boolean {
-    return this.loggedIn.value;
-  }
+  // ==========================
+  // LOGIN FASTAPI
+  // ==========================
+  login(
+    email: string,
+    password: string
+  ): Observable<any> {
 
-  login(email: string, pass: string): boolean {
-    if (email === 'admin@admin.com' && pass === 'admin123') {
-      this.loggedIn.next(true);
-      if (isPlatformBrowser(this.platformId)) {
-        localStorage.setItem('isLoggedIn', 'true');
+    return this.http.post(
+      `${this.apiUrl}/login`,
+      {
+        correo: email,
+        password: password
       }
-      return true;
+    );
+  }
+
+  // ==========================
+  // REGISTER FASTAPI
+  // ==========================
+  register(
+    email: string,
+    password: string
+  ): Observable<any> {
+
+    return this.http.post(
+      `${this.apiUrl}/register`,
+      {
+        nombre: email.split('@')[0],
+        correo: email,
+        password: password
+      }
+    );
+  }
+
+  // ==========================
+  // LOGIN STATUS
+  // ==========================
+  get isLoggedIn(): boolean {
+
+    if (isPlatformBrowser(this.platformId)) {
+      return !!localStorage.getItem('usuario');
     }
+
     return false;
   }
 
-  async loginWithGoogle(): Promise<void> {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(this.auth, provider);
-    // onAuthStateChanged actualizará loggedIn automáticamente
+  // ==========================
+  // SET LOGIN
+  // ==========================
+  setLoggedIn() {
+    this.loggedInSubject.next(true);
   }
 
+  // ==========================
+  // LOGOUT
+  // ==========================
   logout() {
-    signOut(this.auth);
-    this.loggedIn.next(false);
+
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('usuario');
     }
+
+    // También cerrar sesión de Firebase si está activo
+    signOut(this.fireAuth).catch(() => {});
+
+    this.loggedInSubject.next(false);
   }
+
+  // ==========================
+  // GOOGLE LOGIN (Firebase)
+  // ==========================
+  async loginWithGoogle(): Promise<void> {
+
+    const provider = new GoogleAuthProvider();
+
+    // Forzar selección de cuenta cada vez
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    });
+
+    const result = await signInWithPopup(this.fireAuth, provider);
+
+    const user = result.user;
+
+    // Guardar datos del usuario en localStorage (mismo formato que login normal)
+    const usuario = {
+      nombre: user.displayName ?? user.email?.split('@')[0] ?? 'Usuario',
+      correo: user.email ?? '',
+      foto: user.photoURL ?? '',
+      uid: user.uid,
+      proveedor: 'google'
+    };
+
+    localStorage.setItem('usuario', JSON.stringify(usuario));
+    this.loggedInSubject.next(true);
+  }
+
+  verifyOTP(
+    correo: string,
+    codigo: string
+  ) {
+
+    return this.http.post(
+      `${this.apiUrl}/verificar-otp`,
+      {
+        correo,
+        codigo
+      }
+    );
+  }
+
 }

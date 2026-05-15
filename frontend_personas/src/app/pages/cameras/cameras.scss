@@ -88,9 +88,14 @@
       overflow: hidden;
       
       .live-video {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
+        border: none;
         object-fit: cover;
+        display: block;
       }
 
       &.camera-off {
@@ -203,6 +208,7 @@
         background: rgba(255, 255, 255, 0.03);
         border-radius: 12px;
         border-left: 3px solid transparent;
+        flex-shrink: 0;
         animation: slideIn 0.3s ease-out forwards;
 
         @keyframes slideIn {
@@ -213,6 +219,7 @@
         .log-icon {
           width: 36px;
           height: 36px;
+          flex-shrink: 0;
           border-radius: 50%;
           display: flex;
           align-items: center;

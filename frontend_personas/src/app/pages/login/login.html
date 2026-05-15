@@ -1,3 +1,28 @@
+<!-- ══════════════════ Toast Notification Card ══════════════════ -->
+@if (toast.visible) {
+<div class="toast-overlay" (click)="closeToast()">
+  <div class="toast-card" [class]="'toast-card toast-' + toast.type" (click)="$event.stopPropagation()">
+    <div class="toast-icon-wrap">
+      @if (toast.type === 'success') {
+      <i class="bi bi-check-circle-fill"></i>
+      } @else if (toast.type === 'error') {
+      <i class="bi bi-x-circle-fill"></i>
+      } @else {
+      <i class="bi bi-info-circle-fill"></i>
+      }
+    </div>
+    <div class="toast-content">
+      <p class="toast-title">{{ toast.title }}</p>
+      <p class="toast-message">{{ toast.message }}</p>
+    </div>
+    <button class="toast-close" (click)="closeToast()" aria-label="Cerrar">
+      <i class="bi bi-x-lg"></i>
+    </button>
+    <div class="toast-progress"></div>
+  </div>
+</div>
+}
+
 <section *ngIf="!mostrandoOTP" class="login-container">
   <div class="login-box">
     <div class="logo-section">
@@ -41,11 +66,6 @@
       </div>
       }
 
-      @if (errorMsg) {
-      <div class="error-msg">
-        <i class="bi bi-exclamation-triangle"></i> {{ errorMsg }}
-      </div>
-      }
 
       <button class="btn-signin" type="button" (click)="onValidateCredentials()">
         {{ isRegisterMode ? 'Crear cuenta' : 'Ingresar al Sistema' }}
@@ -73,11 +93,6 @@
       </div>
     </form>
 
-    <div class="login-hint">
-      Acceso Demo:<br>
-      User: <strong>admin&#64;admin.com</strong><br>
-      Pass: <strong>admin123</strong>
-    </div>
   </div>
 
   <!-- Face ID Camera Preview Overlay -->
@@ -116,12 +131,6 @@
             required class="otp-input">
         </div>
       </div>
-
-      @if (errorMsg) {
-      <div class="error-msg">
-        <i class="bi bi-exclamation-triangle"></i> {{ errorMsg }}
-      </div>
-      }
 
       <button class="btn-verify" type="button" (click)="onEnterDashboard()">
         Verificar y Entrar

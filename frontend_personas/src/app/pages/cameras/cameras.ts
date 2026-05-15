@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 interface Registro {
   id_registro: string;
@@ -23,7 +23,7 @@ interface Registro {
 export class Cameras implements OnInit, OnDestroy {
   cameraRunning = true;
   detectionRunning = false;
-  streamUrl: SafeResourceUrl = '';
+  streamUrl: SafeUrl = '';
   currentLocation: string = '';
   locationInput: string = '';
 
@@ -59,7 +59,7 @@ export class Cameras implements OnInit, OnDestroy {
   }
 
   refreshStreamUrl() {
-    this.streamUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+    this.streamUrl = this.sanitizer.bypassSecurityTrustUrl(
       `${this.baseStreamUrl}?t=${Date.now()}`
     );
   }

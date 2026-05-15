@@ -1,3 +1,7 @@
+from sqlalchemy.orm import Session
+from passlib.context import CryptContext
+from database import SessionLocal, engine
+from models import Usuario, Base
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import firebase_admin
@@ -9,6 +13,10 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from fastapi import FastAPI, HTTPException
 import filelock
+import random
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 # Inicialización de Firebase Admin
 # Reemplaza el nombre del archivo por el que descargaste
@@ -28,6 +36,22 @@ COLUMNS = ["id_registro", "clase", "genero", "fecha", "hora", "lugar"]
 lock = filelock.FileLock(DB_FILE + ".lock")
 
 app = FastAPI(title="Senior IA Traffic API")
+# OTP temporales
+otp_storage = {}
+Base.metadata.create_all(bind=engine)
+
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto"
+)
+
+# Conexion DB
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(
@@ -47,6 +71,20 @@ class RegistroSchema(BaseModel):
     clase: str # persona o animal
     genero: Optional[str] = None
     lugar: str
+class RegistroUsuario(BaseModel):
+    nombre: str
+    correo: str
+    password: str
+
+
+class LoginUsuario(BaseModel):
+    correo: str
+    password: str
+
+class VerificarOTP(BaseModel):
+    correo: str
+    codigo: str
+
 # --- SISTEMA DE VISION GLOBAL (una sola cámara activa) ---
 vision_system = SeniorVisionSystem(camera_index=0, lugar="Cámara Principal")
 vision_system.start_camera()
@@ -254,8 +292,8 @@ async def send_report_email(data: EmailReportSchema):
         # ==========================================
         # CONFIGURACIÓN DE CORREO (Ajustar por el usuario)
         # ==========================================
-        REMITENTE = "annder795@gmail.com" # CAMBIAR
-        PASSWORD = "jiwp wgrv snfd dmjh" # CAMBIAR - Usar contraseña de aplicación de Google
+        REMITENTE = "dg102090@gmail.com" # CAMBIAR
+        PASSWORD = "uroa vqqe nsea vrci" # CAMBIAR - Usar contraseña de aplicación de Google
         
         # 1. Contenedor Raíz (Alternative directamente, sin Mixed porque no hay adjuntos)
         msg = MIMEMultipart('alternative')
@@ -356,6 +394,177 @@ Departamento de Seguridad
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# ==========================
+# REGISTRO DE USUARIO
+# ==========================
+@app.post("/api/register")
+def register(
+    user: RegistroUsuario,
+    db: Session = Depends(get_db)
+):
+
+    usuario_existente = db.query(Usuario).filter(
+        Usuario.correo == user.correo
+    ).first()
+
+    if usuario_existente:
+        raise HTTPException(
+            status_code=400,
+            detail="El correo ya existe"
+        )
+
+    password_hash = pwd_context.hash(
+        user.password
+    )
+
+    nuevo_usuario = Usuario(
+        nombre=user.nombre,
+        correo=user.correo,
+        password_hash=password_hash
+    )
+
+    db.add(nuevo_usuario)
+    db.commit()
+
+    return {
+        "message": "Usuario registrado correctamente"
+    }
+
+
+# ==========================
+# LOGIN
+# ==========================
+@app.post("/api/login")
+def login(
+    user: LoginUsuario,
+    db: Session = Depends(get_db)
+):
+
+    usuario = db.query(Usuario).filter(
+        Usuario.correo == user.correo
+    ).first()
+
+    if not usuario:
+        raise HTTPException(
+            status_code=401,
+            detail="Usuario no encontrado"
+        )
+
+    if not pwd_context.verify(
+        user.password,
+        usuario.password_hash
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Contraseña incorrecta"
+        )
+
+    # Generar OTP
+    otp = str(
+        random.randint(
+            100000,
+            999999
+        )
+    )
+
+    otp_storage[user.correo] = otp
+
+    # Configuración correo
+    remitente = "dg102090@gmail.com"
+    password = "uroa vqqe nsea vrci"
+
+    asunto = "Código OTP - Senior IA"
+
+    mensaje_html = f"""
+    <h2>Senior IA</h2>
+    <p>Tu código de acceso es:</p>
+
+    <h1 style="color:#7c3aed;">
+        {otp}
+    </h1>
+
+    <p>
+    Este código expira pronto.
+    </p>
+    """
+
+    mensaje = MIMEMultipart()
+    mensaje["From"] = remitente
+    mensaje["To"] = user.correo
+    mensaje["Subject"] = asunto
+
+    mensaje.attach(
+        MIMEText(
+            mensaje_html,
+            "html"
+        )
+    )
+
+    try:
+
+        servidor = smtplib.SMTP(
+            "smtp.gmail.com",
+            587
+        )
+
+        servidor.starttls()
+
+        servidor.login(
+            remitente,
+            password
+        )
+
+        servidor.sendmail(
+            remitente,
+            user.correo,
+            mensaje.as_string()
+        )
+
+        servidor.quit()
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error enviando correo: {str(e)}"
+        )
+
+    return {
+        "message":
+        "OTP enviado al correo" 
+    }
+
+@app.post("/api/verificar-otp")
+def verificar_otp(
+    data: VerificarOTP
+):
+
+    codigo_guardado = otp_storage.get(
+        data.correo
+    )
+
+    if not codigo_guardado:
+
+        raise HTTPException(
+            status_code=404,
+            detail="OTP no encontrado"
+        )
+
+    if (
+        codigo_guardado !=
+        data.codigo
+    ):
+
+        raise HTTPException(
+            status_code=401,
+            detail="Código incorrecto"
+        )
+
+    del otp_storage[data.correo]
+
+    return {
+        "message":
+        "OTP correcto"
+    }
 
 if __name__ == "__main__":
     import uvicorn
