@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
 :root {
@@ -8,13 +8,14 @@
   --active-bg: var(--bg-color);
   --active-text: #ffffff;
   --hover-bg: #f3f4f6;
+  --main-font: 'Inter', sans-serif;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--main-font) !important;
 }
 
 body {
@@ -26,3 +27,97 @@ body {
     radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
     radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
 }
+
+// ==========================================
+// LIGHT THEME OVERRIDES (Global)
+// ==========================================
+body.light-theme {
+  --bg-color: #f3f4f6;
+  background-color: #f3f4f6 !important;
+  color: #1f2937 !important;
+  background-image: none !important;
+
+  h1, h2, h3, h4, h5, h6, p, span, label, td, th {
+    color: #1f2937 !important;
+  }
+
+  .glass-panel, .table-section, .settings-card, .filters-panel, .modal-content {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    color: #1f2937 !important;
+  }
+
+  .subtitle, p.setting-desc, .toggle-desc, .setting-help, .card-header p {
+    color: #4b5563 !important;
+  }
+
+  .sidebar {
+    background-color: #ffffff !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .btn-secondary-outline, .clear-btn {
+    border-color: rgba(0, 0, 0, 0.2) !important;
+    color: #1f2937 !important;
+    &:hover {
+      background: rgba(0, 0, 0, 0.05) !important;
+    }
+  }
+
+  .modern-table {
+    thead th {
+      border-bottom: 2px solid rgba(0, 0, 0, 0.08) !important;
+      background-color: #f9fafb !important;
+      color: #374151 !important;
+    }
+    tbody td {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+      color: #1f2937 !important;
+    }
+  }
+
+  .custom-select, .custom-input, select, input[type="text"], input[type="date"], input[type="email"] {
+    background: #f9fafb !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: #1f2937 !important;
+    &:focus {
+      border-color: #7c3aed !important;
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15) !important;
+    }
+  }
+
+  .slider-round {
+    background-color: #e5e7eb !important;
+  }
+
+  // Mantener las letras e íconos en blanco para la pestaña seleccionada activa en la barra lateral
+  .sidebar a.active, 
+  .sidebar a.active .text, 
+  .sidebar a.active .icon,
+  .sidebar a.active .icon i {
+    color: #ffffff !important;
+  }
+
+  // Adaptación de botones de paginación en Modo Claro
+  .pagination button {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    color: #1f2937 !important;
+
+    i {
+      color: #1f2937 !important;
+    }
+
+    &:hover:not([disabled]) {
+      background: rgba(0, 0, 0, 0.1) !important;
+    }
+  }
+
+  .pagination span {
+    color: #1f2937 !important;
+  }
+}
+

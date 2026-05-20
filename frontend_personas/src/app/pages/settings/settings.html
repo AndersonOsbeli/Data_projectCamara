@@ -1,0 +1,88 @@
+<div class="settings-container animate-fade-in">
+  <!-- Header -->
+  <header class="settings-header">
+    <div class="header-title-area">
+      <div class="icon-glow-wrapper">
+        <i class="bi bi-sliders2-vertical header-icon"></i>
+      </div>
+      <div>
+        <h1>Configuración de Aspecto y Diseño</h1>
+        <p class="subtitle">Personaliza la interfaz visual, fuentes y tamaño de texto de Senior IA.</p>
+      </div>
+    </div>
+    <button class="btn btn-secondary-outline reset-btn" (click)="onResetSettings()">
+      <i class="bi bi-arrow-counterclockwise"></i> Restaurar Valores
+    </button>
+  </header>
+
+  <!-- Content Grid (Simplified to 2 Beautiful Cards) -->
+  <div class="settings-grid">
+    
+    <!-- Card 1: Tema y Aspecto Visual -->
+    <section class="settings-card">
+      <div class="card-header">
+        <i class="bi bi-palette text-accent"></i>
+        <div>
+          <h2>Tema del Sistema</h2>
+          <p>Elige el modo visual que más se adapte a tu entorno</p>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <!-- Dark Mode / Light Mode Selector -->
+        <div class="setting-item">
+          <div class="theme-selector-cards">
+            <button class="theme-card" [class.active]="!lightTheme" (click)="setTheme(false)">
+              <i class="bi bi-moon-stars-fill"></i>
+              <span>Modo Oscuro</span>
+              <p>Predeterminado con efectos de neón</p>
+            </button>
+            <button class="theme-card light" [class.active]="lightTheme" (click)="setTheme(true)">
+              <i class="bi bi-sun-fill"></i>
+              <span>Modo Claro</span>
+              <p>Limpio y de alta visibilidad diurna</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 2: Tipografía y Accesibilidad -->
+    <section class="settings-card">
+      <div class="card-header">
+        <i class="bi bi-fonts text-accent"></i>
+        <div>
+          <h2>Tipografía y Texto</h2>
+          <p>Configura las fuentes y tamaño de texto de toda la interfaz</p>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <!-- Select: Font Family -->
+        <div class="setting-item">
+          <label for="fontFamily" class="setting-label">Tipo de Fuente del Sistema</label>
+          <div class="custom-select-wrapper">
+            <select id="fontFamily" [(ngModel)]="fontFamily" (ngModelChange)="changeFont($event)" class="custom-select">
+              <option value="Inter">Inter (Limpia y Técnica - Por Defecto)</option>
+              <option value="Outfit">Outfit (Moderna, Geométrica y Premium)</option>
+              <option value="Poppins">Poppins (Redondeada, Amigable y Elegante)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Select: Font Size -->
+        <div class="setting-item">
+          <label for="fontSize" class="setting-label">Tamaño de Texto General</label>
+          <div class="custom-select-wrapper">
+            <select id="fontSize" [(ngModel)]="fontSize" (ngModelChange)="changeFontSize($event)" class="custom-select">
+              <option value="small">Pequeño (14px) - Más Compacto</option>
+              <option value="medium">Mediano (16px) - Estándar</option>
+              <option value="large">Grande (18px) - Mejor Visibilidad</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

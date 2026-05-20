@@ -63,6 +63,9 @@ export class Dashboard implements OnInit {
   };
 
   ngOnInit() {
+    const isLightTheme = localStorage.getItem('settings-light-theme') === 'true';
+    this.updateChartTheme(isLightTheme);
+
     this.dataService.getSummary().subscribe({
       next: (sum) => {
         this.summary = sum;
@@ -99,6 +102,26 @@ export class Dashboard implements OnInit {
       },
       error: (err) => console.error('Error fetching registros:', err)
     });
+  }
+
+  updateChartTheme(isLight: boolean) {
+    const textColor = isLight ? '#1f2937' : '#ffffff';
+    const gridColor = isLight ? 'rgba(0, 0, 0, 0.08)' : '#2a2b36';
+
+    if (this.doughnutChartOptions?.plugins?.legend?.labels) {
+      this.doughnutChartOptions.plugins.legend.labels.color = textColor;
+    }
+
+    if (this.barChartOptions?.scales) {
+      if (this.barChartOptions.scales['x']) {
+        this.barChartOptions.scales['x'].grid = { color: gridColor };
+        this.barChartOptions.scales['x'].ticks = { color: textColor };
+      }
+      if (this.barChartOptions.scales['y']) {
+        this.barChartOptions.scales['y'].grid = { color: gridColor };
+        this.barChartOptions.scales['y'].ticks = { color: textColor };
+      }
+    }
   }
 
   applyFilter() {

@@ -1,0 +1,323 @@
+// Variables de color locales (armonizadas con el tema oscuro de styles.scss)
+$bg-dark: #0d0f23;
+$card-bg: rgba(255, 255, 255, 0.03);
+$card-border: rgba(255, 255, 255, 0.08);
+$text-primary: #ffffff;
+$text-secondary: #a0aec0;
+$accent-color: #7c3aed; // Violeta de Senior IA
+
+.settings-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+// Header
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+
+  .header-title-area {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .icon-glow-wrapper {
+    background: rgba(124, 58, 237, 0.15);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    padding: 0.8rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.15);
+  }
+
+  .header-icon {
+    font-size: 1.8rem;
+    color: $accent-color;
+    text-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: 0.2rem;
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle {
+    color: $text-secondary;
+    font-size: 0.95rem;
+  }
+
+  .reset-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: $text-primary;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// Layout Grid (2 Beautiful Cards in 2 columns)
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Card Style
+.settings-card {
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-bottom: 1px solid $card-border;
+    background: rgba(255, 255, 255, 0.01);
+
+    i {
+      font-size: 1.4rem;
+      color: $accent-color;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: $text-primary;
+      margin-bottom: 0.1rem;
+    }
+
+    p {
+      font-size: 0.8rem;
+      color: $text-secondary;
+    }
+  }
+
+  .card-body {
+    padding: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+// Theme Selector Cards (Dark/Light Cards)
+.theme-selector-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.theme-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid $card-border;
+  border-radius: 12px;
+  padding: 1.8rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #fff;
+
+  i {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+    color: #a0aec0;
+    transition: all 0.3s ease;
+  }
+
+  span {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+  }
+
+  p {
+    font-size: 0.72rem;
+    color: $text-secondary;
+    line-height: 1.3;
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &.active {
+    border-color: $accent-color;
+    background: rgba(124, 58, 237, 0.05);
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.1);
+    
+    i {
+      color: $accent-color;
+      transform: scale(1.1);
+      text-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
+    }
+  }
+
+  &.light {
+    color: #1f2937;
+    background: #f9fafb;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+
+    i {
+      color: #718096;
+    }
+
+    p {
+      color: #718096;
+    }
+
+    &:hover {
+      background: #f3f4f6;
+      border-color: rgba(0, 0, 0, 0.15);
+    }
+
+    &.active {
+      border-color: $accent-color;
+      background: rgba(124, 58, 237, 0.03);
+      box-shadow: 0 0 15px rgba(124, 58, 237, 0.05);
+
+      i {
+        color: #f59e0b; // Sun is gold in active light
+      }
+    }
+  }
+}
+
+// Setting Items
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.setting-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+// Custom Selects
+.custom-select-wrapper {
+  position: relative;
+  width: 100%;
+
+  &::after {
+    content: "▾";
+    font-size: 0.8rem;
+    color: $text-secondary;
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+}
+
+.custom-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $card-border;
+  border-radius: 8px;
+  color: $text-primary;
+  outline: none;
+  font-size: 0.85rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:focus {
+    border-color: $accent-color;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
+  }
+
+  option {
+    background: #0d0f23;
+    color: #fff;
+    padding: 0.5rem;
+  }
+}
+
+// Light theme specific overrides for settings card inside light mode
+body.light-theme {
+  .settings-card {
+    background: #ffffff !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+
+    .card-header {
+      background: rgba(0, 0, 0, 0.01) !important;
+      border-bottom-color: rgba(0, 0, 0, 0.06) !important;
+
+      h2 { color: #1f2937 !important; }
+    }
+
+    .setting-label { color: #1f2937 !important; }
+  }
+}
+
+// Animations
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

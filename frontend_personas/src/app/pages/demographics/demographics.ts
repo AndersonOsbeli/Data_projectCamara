@@ -52,6 +52,9 @@ export class Demographics implements OnInit {
   };
 
   ngOnInit() {
+    const isLightTheme = localStorage.getItem('settings-light-theme') === 'true';
+    this.updateChartTheme(isLightTheme);
+
     this.dataService.getRegistros().subscribe({
       next: (registros) => {
         // Filter out animals, keep only "persona"
@@ -64,6 +67,41 @@ export class Demographics implements OnInit {
       },
       error: (err) => console.error("Error fetching data:", err)
     });
+  }
+
+  updateChartTheme(isLight: boolean) {
+    const textColor = isLight ? '#1f2937' : '#fff';
+    const gridColor = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255,255,255,0.05)';
+
+    // Update Line Chart Options
+    if (this.lineChartOptions?.scales) {
+      if (this.lineChartOptions.scales['x']) {
+        this.lineChartOptions.scales['x'].grid = { color: gridColor };
+        this.lineChartOptions.scales['x'].ticks = { color: textColor };
+      }
+      if (this.lineChartOptions.scales['y']) {
+        this.lineChartOptions.scales['y'].grid = { color: gridColor };
+        this.lineChartOptions.scales['y'].ticks = { color: textColor };
+      }
+    }
+    if (this.lineChartOptions?.plugins?.legend?.labels) {
+      this.lineChartOptions.plugins.legend.labels.color = textColor;
+    }
+
+    // Update Bar Chart Options
+    if (this.barChartOptions?.scales) {
+      if (this.barChartOptions.scales['x']) {
+        this.barChartOptions.scales['x'].grid = { color: gridColor };
+        this.barChartOptions.scales['x'].ticks = { color: textColor };
+      }
+      if (this.barChartOptions.scales['y']) {
+        this.barChartOptions.scales['y'].grid = { color: gridColor };
+        this.barChartOptions.scales['y'].ticks = { color: textColor };
+      }
+    }
+    if (this.barChartOptions?.plugins?.legend?.labels) {
+      this.barChartOptions.plugins.legend.labels.color = textColor;
+    }
   }
 
   processTimeData(personas: Registro[]) {
