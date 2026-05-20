@@ -23,6 +23,7 @@ export class Login {
   showPassword = false;
   isRegisterMode = false;
   mostrandoOTP = false;
+  googleUserTempData: any = null;
 
   isFaceIDScanning = false;
   faceIDStream: MediaStream | null = null;
@@ -225,11 +226,16 @@ export class Login {
         next: () => {
 
           // === AQUÍ SE GUARDA EL USUARIO TRAS VERIFICAR OTP ===
-          localStorage.setItem('usuario', JSON.stringify({
-            correo: this.email,
-            nombre: this.email.split('@')[0],
-            proveedor: 'local'
-          }));
+          if (this.googleUserTempData) {
+            localStorage.setItem('usuario', JSON.stringify(this.googleUserTempData));
+            this.googleUserTempData = null;
+          } else {
+            localStorage.setItem('usuario', JSON.stringify({
+              correo: this.email,
+              nombre: this.email.split('@')[0],
+              proveedor: 'local'
+            }));
+          }
 
           this.showToast(
             '¡Verificación exitosa! Entrando al sistema...',
@@ -266,24 +272,56 @@ export class Login {
     this.codigoOTP = '';
 
     this.errorMsg = '';
+    
+    this.googleUserTempData = null;
   }
 
   // ── Google Sign-In via Firebase ─────────────────────────────────────────────
   async onGoogleSignIn() {
     try {
+      this.errorMsg = '';
+      const usuario = await this.authService.loginWithGoogle();
 
-      await this.authService.loginWithGoogle();
+      this.googleUserTempData = usuario;
+      this.email = usuario.correo;
 
-      this.router.navigate(['/dashboard']);
+      this.showToast(
+        'Iniciando verificación. Enviando código de acceso a tu correo de Google...',
+        'info',
+        'Verificación de Google'
+      );
+
+      this.authService.requestGoogleOTP(usuario.correo).subscribe({
+        next: () => {
+          this.mostrandoOTP = true;
+          this.showToast(
+            'Código de verificación enviado a tu cuenta de Google',
+            'success',
+            'Código enviado'
+          );
+          this.cdr.detectChanges();
+        },
+        error: (err: any) => {
+          this.googleUserTempData = null;
+          this.showToast(
+            err.error?.detail || 'No se pudo enviar el código de verificación.',
+            'error',
+            'Error de envío'
+          );
+        }
+      });
 
     } catch (error: any) {
-
+      this.googleUserTempData = null;
       if (
         error?.code !==
         'auth/popup-closed-by-user'
       ) {
-        this.errorMsg =
-          'No se pudo iniciar sesión con Google. Inténtalo de nuevo.';
+        this.showToast(
+          'No se pudo iniciar sesión con Google. Inténtalo de nuevo.',
+          'error',
+          'Google Sign-In fallido'
+        );
 
         console.error(
           'Google Sign-In error:',

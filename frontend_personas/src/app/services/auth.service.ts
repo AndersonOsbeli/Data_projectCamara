@@ -119,10 +119,7 @@ export class AuthService {
     this.loggedInSubject.next(false);
   }
 
-  // ==========================
-  // GOOGLE LOGIN (Firebase)
-  // ==========================
-  async loginWithGoogle(): Promise<void> {
+  async loginWithGoogle(): Promise<any> {
 
     const provider = new GoogleAuthProvider();
 
@@ -135,7 +132,6 @@ export class AuthService {
 
     const user = result.user;
 
-    // Guardar datos del usuario en localStorage (mismo formato que login normal)
     const usuario = {
       nombre: user.displayName ?? user.email?.split('@')[0] ?? 'Usuario',
       correo: user.email ?? '',
@@ -144,8 +140,16 @@ export class AuthService {
       proveedor: 'google'
     };
 
-    localStorage.setItem('usuario', JSON.stringify(usuario));
-    this.loggedInSubject.next(true);
+    return usuario;
+  }
+
+  requestGoogleOTP(correo: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/google-otp`,
+      {
+        correo
+      }
+    );
   }
 
   verifyOTP(

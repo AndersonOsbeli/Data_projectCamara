@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
+import bcrypt
 from database import SessionLocal, engine
 from models import Usuario, Base
 from fastapi import FastAPI, HTTPException, Depends
@@ -40,10 +40,22 @@ app = FastAPI(title="Senior IA Traffic API")
 otp_storage = {}
 Base.metadata.create_all(bind=engine)
 
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto"
-)
+class PasswordContext:
+    def hash(self, password: str) -> str:
+        password_bytes = password.encode('utf-8')
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(password_bytes, salt)
+        return hashed.decode('utf-8')
+
+    def verify(self, password: str, hashed_password: str) -> bool:
+        try:
+            password_bytes = password.encode('utf-8')
+            hashed_bytes = hashed_password.encode('utf-8')
+            return bcrypt.checkpw(password_bytes, hashed_bytes)
+        except Exception:
+            return False
+
+pwd_context = PasswordContext()
 
 # Conexion DB
 def get_db():
@@ -84,6 +96,9 @@ class LoginUsuario(BaseModel):
 class VerificarOTP(BaseModel):
     correo: str
     codigo: str
+
+class GoogleOTPRequest(BaseModel):
+    correo: str
 
 # --- SISTEMA DE VISION GLOBAL (una sola cámara activa) ---
 vision_system = SeniorVisionSystem(camera_index=0, lugar="Cámara Principal")
@@ -531,6 +546,53 @@ def login(
     return {
         "message":
         "OTP enviado al correo" 
+    }
+
+@app.post("/api/google-otp")
+def enviar_google_otp(data: GoogleOTPRequest):
+    otp = str(random.randint(100000, 999999))
+    otp_storage[data.correo] = otp
+
+    remitente = "dg102090@gmail.com"
+    password = "uroa vqqe nsea vrci"
+
+    asunto = "Código de verificación de Google - Senior IA"
+
+    mensaje_html = f"""
+    <h2>Senior IA</h2>
+    <p>Has iniciado sesión con Google. Para completar el acceso y verificar tu identidad, ingresa el siguiente código de verificación:</p>
+    <h1 style="color:#7c3aed;">
+        {otp}
+    </h1>
+    <p>Este código expira pronto.</p>
+    """
+
+    mensaje = MIMEMultipart()
+    mensaje["From"] = remitente
+    mensaje["To"] = data.correo
+    mensaje["Subject"] = asunto
+
+    mensaje.attach(
+        MIMEText(
+            mensaje_html,
+            "html"
+        )
+    )
+
+    try:
+        servidor = smtplib.SMTP("smtp.gmail.com", 587)
+        servidor.starttls()
+        servidor.login(remitente, password)
+        servidor.sendmail(remitente, data.correo, mensaje.as_string())
+        servidor.quit()
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error enviando correo: {str(e)}"
+        )
+
+    return {
+        "message": "OTP enviado al correo de Google"
     }
 
 @app.post("/api/verificar-otp")
