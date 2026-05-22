@@ -1,88 +1,353 @@
 <div class="settings-container animate-fade-in">
-  <!-- Header -->
-  <header class="settings-header">
-    <div class="header-title-area">
-      <div class="icon-glow-wrapper">
-        <i class="bi bi-sliders2-vertical header-icon"></i>
+    <!-- Header -->
+    <header class="settings-header">
+      <div class="header-title-area">
+        <div class="icon-glow-wrapper">
+          <i class="bi bi-sliders2-vertical header-icon"></i>
+        </div>
+        <div>
+          <h1>Configuración de Aspecto y Diseño</h1>
+          <p class="subtitle">Personaliza la interfaz visual, fuentes y tamaño de texto de Senior IA.</p>
+        </div>
       </div>
-      <div>
-        <h1>Configuración de Aspecto y Diseño</h1>
-        <p class="subtitle">Personaliza la interfaz visual, fuentes y tamaño de texto de Senior IA.</p>
+      <div class="header-actions">
+        <button class="btn btn-secondary-outline reset-btn" (click)="onResetSettings()">
+          <i class="bi bi-arrow-counterclockwise"></i> Restaurar Valores
+        </button>
       </div>
+    </header>
+
+    <!-- Unified Dashboard Grid (Matches Apariencia view from screenshot) -->
+    <div class="settings-workspace-grid">
+      
+      <!-- Left Column Cards -->
+      <div class="settings-col">
+        <!-- Tema del Sistema -->
+        <section class="settings-card card-tema">
+          <div class="card-header">
+            <i class="bi bi-palette text-accent"></i>
+            <div>
+              <h2>Tema del Sistema</h2>
+              <p>Elige el modo visual que más se adapte a tu entorno</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="theme-selector-cards">
+              <button class="theme-card" [class.active]="!lightTheme" (click)="setTheme(false)">
+                <div class="theme-card-indicator" *ngIf="!lightTheme"><i class="bi bi-check-circle-fill"></i></div>
+                <i class="bi bi-moon-stars-fill theme-icon-dark"></i>
+                <span class="theme-card-title">Modo Oscuro</span>
+                <p class="theme-card-desc">Predeterminado con efectos de neón</p>
+              </button>
+              <button class="theme-card light" [class.active]="lightTheme" (click)="setTheme(true)">
+                <div class="theme-card-indicator" *ngIf="lightTheme"><i class="bi bi-check-circle-fill"></i></div>
+                <i class="bi bi-sun-fill theme-icon-light"></i>
+                <span class="theme-card-title">Modo Claro</span>
+                <p class="theme-card-desc">Limpio y de alta visibilidad diurna</p>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Color Principal del Sistema -->
+        <section class="settings-card card-color">
+          <div class="card-header">
+            <i class="bi bi-color-palette text-accent"></i>
+            <div>
+              <h2>Color Principal del Sistema</h2>
+              <p>Selecciona el color acento principal de la interfaz</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="color-picker-grid">
+              <button class="color-option-card" [class.active]="primaryColor === 'purple'" (click)="setPrimaryColor('purple')">
+                <span class="color-dot purple"></span>
+                <span class="color-name">Morado</span>
+                <i class="bi bi-check-circle-fill check-indicator" *ngIf="primaryColor === 'purple'"></i>
+              </button>
+              <button class="color-option-card" [class.active]="primaryColor === 'blue'" (click)="setPrimaryColor('blue')">
+                <span class="color-dot blue"></span>
+                <span class="color-name">Azul</span>
+                <i class="bi bi-check-circle-fill check-indicator" *ngIf="primaryColor === 'blue'"></i>
+              </button>
+              <button class="color-option-card" [class.active]="primaryColor === 'green'" (click)="setPrimaryColor('green')">
+                <span class="color-dot green"></span>
+                <span class="color-name">Verde</span>
+                <i class="bi bi-check-circle-fill check-indicator" *ngIf="primaryColor === 'green'"></i>
+              </button>
+              <button class="color-option-card" [class.active]="primaryColor === 'red'" (click)="setPrimaryColor('red')">
+                <span class="color-dot red"></span>
+                <span class="color-name">Rojo</span>
+                <i class="bi bi-check-circle-fill check-indicator" *ngIf="primaryColor === 'red'"></i>
+              </button>
+              <button class="color-option-card" [class.active]="primaryColor === 'black'" (click)="setPrimaryColor('black')">
+                <span class="color-dot black"></span>
+                <span class="color-name">Negro</span>
+                <i class="bi bi-check-circle-fill check-indicator" *ngIf="primaryColor === 'black'"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Diseño del Menú -->
+        <section class="settings-card card-menu">
+          <div class="card-header">
+            <i class="bi bi-menu-button-wide text-accent"></i>
+            <div>
+              <h2>Diseño del Menú</h2>
+              <p>Personaliza la apariencia del menú lateral</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="menu-style-cards">
+              <button class="menu-style-card" [class.active]="menuStyle === 'expanded'" (click)="setMenuStyle('expanded')">
+                <div class="mini-menu-preview expanded">
+                  <div class="preview-sidebar">
+                    <span class="bar line1"></span>
+                    <span class="bar line2"></span>
+                    <span class="bar line3"></span>
+                  </div>
+                  <div class="preview-body"></div>
+                </div>
+                <span class="style-title">Menú Expandido</span>
+              </button>
+              <button class="menu-style-card" [class.active]="menuStyle === 'compact'" (click)="setMenuStyle('compact')">
+                <div class="mini-menu-preview compact">
+                  <div class="preview-sidebar">
+                    <span class="circle circle1"></span>
+                    <span class="circle circle2"></span>
+                    <span class="circle circle3"></span>
+                  </div>
+                  <div class="preview-body"></div>
+                </div>
+                <span class="style-title">Menú Compacto</span>
+              </button>
+              <button class="menu-style-card" [class.active]="menuStyle === 'icons'" (click)="setMenuStyle('icons')">
+                <div class="mini-menu-preview icons-only">
+                  <div class="preview-sidebar">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                  </div>
+                  <div class="preview-body"></div>
+                </div>
+                <span class="style-title">Solo Iconos</span>
+              </button>
+            </div>
+
+            <div class="menu-toggles-row">
+              <div class="menu-toggle-item">
+                <span>Mostrar iconos</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" [(ngModel)]="showIcons" (change)="applyMenuSettings()">
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="menu-toggle-item">
+                <span>Mostrar texto</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" [(ngModel)]="showText" (change)="applyMenuSettings()">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right Column Cards -->
+      <div class="settings-col">
+        <!-- Vista Previa en Tiempo Real -->
+        <section class="settings-card card-preview">
+          <div class="card-header">
+            <i class="bi bi-eye text-accent"></i>
+            <div>
+              <h2>Vista Previa en Tiempo Real</h2>
+              <p>Así se verá tu interfaz con la configuración actual</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Simulated application mockup -->
+            <div class="app-mockup" [class.light]="lightTheme" [style.--accent-color]="primaryColor === 'purple' ? '#7c3aed' : (primaryColor === 'blue' ? '#3b82f6' : (primaryColor === 'green' ? '#10b981' : (primaryColor === 'red' ? '#ef4444' : '#1f2937')))">
+              <!-- Mockup Sidebar -->
+              <div class="mockup-sidebar" [class.compact]="menuStyle === 'compact'" [class.icons-only]="menuStyle === 'icons'">
+                <div class="mockup-logo">
+                  <i class="bi bi-sliders2-vertical"></i>
+                </div>
+                <div class="mockup-nav-links">
+                  <div class="mockup-nav-link active">
+                    <i class="bi bi-grid-1x2"></i>
+                    <span class="mockup-nav-text" *ngIf="menuStyle !== 'icons'">Dashboard</span>
+                  </div>
+                  <div class="mockup-nav-link">
+                    <i class="bi bi-camera-video"></i>
+                    <span class="mockup-nav-text" *ngIf="menuStyle !== 'icons'">Cámaras</span>
+                  </div>
+                  <div class="mockup-nav-link">
+                    <i class="bi bi-gear"></i>
+                    <span class="mockup-nav-text" *ngIf="menuStyle !== 'icons'">Ajustes</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Mockup Content -->
+              <div class="mockup-main">
+                <div class="mockup-navbar">
+                  <div class="mockup-search">
+                    <i class="bi bi-search"></i>
+                    <span>Buscar...</span>
+                  </div>
+                  <div class="mockup-nav-right">
+                    <i class="bi bi-bell"></i>
+                    <i class="bi bi-gear"></i>
+                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Admin" alt="Preview User" class="mockup-user">
+                  </div>
+                </div>
+                
+                <div class="mockup-grid">
+                  <!-- System title preview card -->
+                  <div class="mockup-card p-title">
+                    <h3 class="mockup-title">Título del Sistema</h3>
+                    <p class="mockup-text">Texto de ejemplo del sistema para mostrar cómo se verá el contenido.</p>
+                    <button class="mockup-btn">Botón Primario</button>
+                  </div>
+                  
+                  <!-- Sample chart widget preview card -->
+                  <div class="mockup-card p-widget">
+                    <h3 class="mockup-title">Tarjeta de Ejemplo</h3>
+                    <p class="mockup-text">Este es un ejemplo de tarjeta con tu configuración actual.</p>
+                    <!-- Simulated mini line chart -->
+                    <div class="mockup-chart">
+                      <svg viewBox="0 0 100 30" class="sparkline">
+                        <path d="M0,25 Q15,5 30,20 T60,5 T90,25 T100,10" fill="none" stroke="var(--accent-color)" stroke-width="2"></path>
+                        <circle cx="100" cy="10" r="2" fill="var(--accent-color)"></circle>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tipografía y Texto -->
+        <section class="settings-card card-typography">
+          <div class="card-header">
+            <i class="bi bi-type text-accent"></i>
+            <div>
+              <h2>Tipografía y Texto</h2>
+              <p>Configura las fuentes y tamaño de texto de toda la interfaz</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="typography-inputs">
+              <!-- Select: Font Family -->
+              <div class="setting-item">
+                <label for="fontFamily" class="setting-label">Tipo de Fuente del Sistema</label>
+                <div class="custom-select-wrapper">
+                  <select id="fontFamily" [(ngModel)]="fontFamily" (ngModelChange)="changeFont($event)" class="custom-select">
+                    <option value="Inter">Inter (Limpia y Técnica - Por Defecto)</option>
+                    <option value="Outfit">Outfit (Moderna, Geométrica y Premium)</option>
+                    <option value="Poppins">Poppins (Redondeada, Amigable y Elegante)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Select: Font Size -->
+              <div class="setting-item">
+                <label for="fontSize" class="setting-label">Tamaño de Texto General</label>
+                <div class="custom-select-wrapper">
+                  <select id="fontSize" [(ngModel)]="fontSize" (ngModelChange)="changeFontSize($event)" class="custom-select">
+                    <option value="small">Pequeño (14px) - Más Compacto</option>
+                    <option value="medium">Mediano (16px) - Estándar</option>
+                    <option value="large">Grande (18px) - Mejor Visibilidad</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Font description note -->
+            <div class="font-desc-box">
+              <span class="desc-title">Descripción de la fuente</span>
+              <p class="desc-text">{{ getFontDesc() }}</p>
+            </div>
+          </div>
+        </section>
+
+
+      
     </div>
-    <button class="btn btn-secondary-outline reset-btn" (click)="onResetSettings()">
-      <i class="bi bi-arrow-counterclockwise"></i> Restaurar Valores
-    </button>
-  </header>
 
-  <!-- Content Grid (Simplified to 2 Beautiful Cards) -->
-  <div class="settings-grid">
-    
-    <!-- Card 1: Tema y Aspecto Visual -->
-    <section class="settings-card">
+    <!-- Presets de Temas (Wide panel) -->
+    <section class="settings-card card-presets">
       <div class="card-header">
-        <i class="bi bi-palette text-accent"></i>
+        <i class="bi bi-stars text-accent"></i>
         <div>
-          <h2>Tema del Sistema</h2>
-          <p>Elige el modo visual que más se adapte a tu entorno</p>
+          <h2>Presets de Temas</h2>
+          <p>Aplica combinaciones de temas prediseñadas con un clic</p>
         </div>
       </div>
-      
       <div class="card-body">
-        <!-- Dark Mode / Light Mode Selector -->
-        <div class="setting-item">
-          <div class="theme-selector-cards">
-            <button class="theme-card" [class.active]="!lightTheme" (click)="setTheme(false)">
-              <i class="bi bi-moon-stars-fill"></i>
-              <span>Modo Oscuro</span>
-              <p>Predeterminado con efectos de neón</p>
-            </button>
-            <button class="theme-card light" [class.active]="lightTheme" (click)="setTheme(true)">
-              <i class="bi bi-sun-fill"></i>
-              <span>Modo Claro</span>
-              <p>Limpio y de alta visibilidad diurna</p>
-            </button>
-          </div>
+        <div class="presets-row">
+          <!-- Neon Dark -->
+          <button class="preset-card neon-dark" [class.active]="isPresetActive('neon-dark')" (click)="applyPreset('neon-dark')">
+            <div class="preset-badge" *ngIf="isPresetActive('neon-dark')">Actual</div>
+            <i class="bi bi-moon-stars-fill preset-icon"></i>
+            <div class="preset-info">
+              <span class="preset-title">Neon Dark</span>
+              <p class="preset-desc">Moderno y elegante con efectos neón</p>
+            </div>
+          </button>
+          
+          <!-- Clean Light -->
+          <button class="preset-card clean-light" [class.active]="isPresetActive('clean-light')" (click)="applyPreset('clean-light')">
+            <div class="preset-badge" *ngIf="isPresetActive('clean-light')">Actual</div>
+            <i class="bi bi-sun-fill preset-icon"></i>
+            <div class="preset-info">
+              <span class="preset-title">Clean Light</span>
+              <p class="preset-desc">Claro y minimalista para alta productividad</p>
+            </div>
+          </button>
+
+          <!-- Corporate Blue -->
+          <button class="preset-card corporate-blue" [class.active]="isPresetActive('corporate-blue')" (click)="applyPreset('corporate-blue')">
+            <div class="preset-badge" *ngIf="isPresetActive('corporate-blue')">Actual</div>
+            <i class="bi bi-building preset-icon"></i>
+            <div class="preset-info">
+              <span class="preset-title">Corporate Blue</span>
+              <p class="preset-desc">Profesional y confiable en entornos corporativos</p>
+            </div>
+          </button>
+
+          <!-- Minimal Black -->
+          <button class="preset-card minimal-black" [class.active]="isPresetActive('minimal-black')" (click)="applyPreset('minimal-black')">
+            <div class="preset-badge" *ngIf="isPresetActive('minimal-black')">Actual</div>
+            <i class="bi bi-palette-fill preset-icon"></i>
+            <div class="preset-info">
+              <span class="preset-title">Minimal Black</span>
+              <p class="preset-desc">Minimalista y enfocado en el contenido</p>
+            </div>
+          </button>
+
+          <!-- Forest Green -->
+          <button class="preset-card forest-green" [class.active]="isPresetActive('forest-green')" (click)="applyPreset('forest-green')">
+            <div class="preset-badge" *ngIf="isPresetActive('forest-green')">Actual</div>
+            <i class="bi bi-tree-fill preset-icon"></i>
+            <div class="preset-info">
+              <span class="preset-title">Forest Green</span>
+              <p class="preset-desc">Natural y relajante para largas jornadas</p>
+            </div>
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- Card 2: Tipografía y Accesibilidad -->
-    <section class="settings-card">
-      <div class="card-header">
-        <i class="bi bi-fonts text-accent"></i>
-        <div>
-          <h2>Tipografía y Texto</h2>
-          <p>Configura las fuentes y tamaño de texto de toda la interfaz</p>
-        </div>
-      </div>
-      
-      <div class="card-body">
-        <!-- Select: Font Family -->
-        <div class="setting-item">
-          <label for="fontFamily" class="setting-label">Tipo de Fuente del Sistema</label>
-          <div class="custom-select-wrapper">
-            <select id="fontFamily" [(ngModel)]="fontFamily" (ngModelChange)="changeFont($event)" class="custom-select">
-              <option value="Inter">Inter (Limpia y Técnica - Por Defecto)</option>
-              <option value="Outfit">Outfit (Moderna, Geométrica y Premium)</option>
-              <option value="Poppins">Poppins (Redondeada, Amigable y Elegante)</option>
-            </select>
-          </div>
-        </div>
+</div>
 
-        <!-- Select: Font Size -->
-        <div class="setting-item">
-          <label for="fontSize" class="setting-label">Tamaño de Texto General</label>
-          <div class="custom-select-wrapper">
-            <select id="fontSize" [(ngModel)]="fontSize" (ngModelChange)="changeFontSize($event)" class="custom-select">
-              <option value="small">Pequeño (14px) - Más Compacto</option>
-              <option value="medium">Mediano (16px) - Estándar</option>
-              <option value="large">Grande (18px) - Mejor Visibilidad</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </section>
-
+<!-- Beautiful Floating Success Toast! -->
+<div class="floating-toast" [class.show]="showToast">
+  <div class="toast-content">
+    <i class="bi bi-check-circle-fill toast-icon"></i>
+    <span>{{ toastMessage }}</span>
   </div>
 </div>

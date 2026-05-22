@@ -1,41 +1,76 @@
 <nav class="sidebar">
-  <ul>
-    <li>
-      <a routerLink="/dashboard" routerLinkActive="active">
-        <span class="icon"><i class="bi bi-grid-1x2"></i></span>
-        <span class="text">Dashboard</span>
-      </a>
-    </li>
-    <li>
-      <a routerLink="/cameras" routerLinkActive="active">
-        <span class="icon"><i class="bi bi-camera-video"></i></span>
-        <span class="text">Cámaras</span>
-      </a>
-    </li>
-    <li>
-      <a routerLink="/demographics" routerLinkActive="active">
-        <span class="icon"><i class="bi bi-people"></i></span>
-        <span class="text">Demografía</span>
-      </a>
-    </li>
-    <li>
-      <a routerLink="/reports" routerLinkActive="active">
-        <span class="icon"><i class="bi bi-file-earmark-bar-graph"></i></span>
-        <span class="text">Reportes</span>
-      </a>
-    </li>
-    <li class="separator"></li>
-    <li>
-      <a routerLink="/settings" routerLinkActive="active">
-        <span class="icon"><i class="bi bi-gear"></i></span>
-        <span class="text">Configuración</span>
-      </a>
-    </li>
-    <li>
-      <a href="#" (click)="logout($event)">
-        <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
-        <span class="text">Cerrar Sesión</span>
-      </a>
-    </li>
-  </ul>
+
+  <!-- Logo / Brand -->
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      <i class="bi bi-camera-video-fill"></i>
+    </div>
+    <div class="brand-text">
+      <span class="brand-name">Senior IA</span>
+      <span class="brand-sub">Sistema de Vigilancia</span>
+    </div>
+  </div>
+
+  <!-- Navigation Links -->
+  <div class="sidebar-nav">
+    <span class="nav-section-label">Principal</span>
+    <ul>
+      <li>
+        <a routerLink="/dashboard" routerLinkActive="active" data-tooltip="Dashboard">
+          <span class="icon"><i class="bi bi-grid-1x2-fill"></i></span>
+          <span class="text">Dashboard</span>
+          <span class="active-dot"></span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/cameras" routerLinkActive="active" data-tooltip="Cámaras">
+          <span class="icon"><i class="bi bi-camera-video-fill"></i></span>
+          <span class="text">Cámaras</span>
+          <span class="active-dot"></span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/demographics" routerLinkActive="active" data-tooltip="Demografía">
+          <span class="icon"><i class="bi bi-people-fill"></i></span>
+          <span class="text">Demografía</span>
+          <span class="active-dot"></span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/reports" routerLinkActive="active" data-tooltip="Reportes">
+          <span class="icon"><i class="bi bi-file-earmark-bar-graph-fill"></i></span>
+          <span class="text">Reportes</span>
+          <span class="active-dot"></span>
+        </a>
+      </li>
+    </ul>
+
+    <span class="nav-section-label" style="margin-top: 1.5rem;">Sistema</span>
+    <ul>
+      <li>
+        <a routerLink="/settings" routerLinkActive="active" data-tooltip="Configuración">
+          <span class="icon"><i class="bi bi-gear-fill"></i></span>
+          <span class="text">Configuración</span>
+          <span class="active-dot"></span>
+        </a>
+      </li>
+      <li>
+        <a href="#" (click)="logout($event)" class="logout-link" data-tooltip="Cerrar Sesión">
+          <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
+          <span class="text">Cerrar Sesión</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Profile Card at Bottom -->
+  <div class="sidebar-profile">
+    <img [src]="user?.foto ? user.foto : 'https://api.dicebear.com/7.x/adventurer/svg?seed=' + (user?.nombre || 'Admin')" alt="Avatar" class="profile-avatar">
+    <div class="profile-info">
+      <span class="profile-name">{{ user?.nombre || 'Admin' }}</span>
+      <span class="profile-role" [title]="user?.correo || 'Administrador'">{{ user?.correo || 'Administrador' }}</span>
+    </div>
+    <i class="bi bi-chevron-down profile-chevron"></i>
+  </div>
+
 </nav>

@@ -93,13 +93,7 @@ body.light-theme {
     background-color: #e5e7eb !important;
   }
 
-  // Mantener las letras e íconos en blanco para la pestaña seleccionada activa en la barra lateral
-  .sidebar a.active, 
-  .sidebar a.active .text, 
-  .sidebar a.active .icon,
-  .sidebar a.active .icon i {
-    color: #ffffff !important;
-  }
+
 
   // Adaptación de botones de paginación en Modo Claro
   .pagination button {

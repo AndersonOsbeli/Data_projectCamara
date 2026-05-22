@@ -11,4 +11,10 @@
   padding: 40px;
   overflow-y: auto;
   height: 100%;
+  transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Cuando el sidebar está en modo solo-iconos, ajustar padding del content
+:host-context(body.sidebar-icons) .content-area {
+  padding: 32px;
 }

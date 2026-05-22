@@ -52,7 +52,7 @@ export class Demographics implements OnInit {
   };
 
   ngOnInit() {
-    const isLightTheme = localStorage.getItem('settings-light-theme') === 'true';
+    const isLightTheme = document.body.classList.contains('light-theme');
     this.updateChartTheme(isLightTheme);
 
     this.dataService.getRegistros().subscribe({
