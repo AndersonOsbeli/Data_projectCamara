@@ -1,25 +1,44 @@
-# Dependencias
-node_modules/
-.npm
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Build outputs
-dist/
-.angular/
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
 
-# Archivos de entorno (contienen API keys)
-src/environments/environment.prod.ts
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
 
-# Cache
-.cache/
-
-# IDE
-.vscode/
+# IDEs and editors
 .idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# Logs
-*.log
-npm-debug.log*
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+.history/*
 
-# OS
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
 .DS_Store
 Thumbs.db
