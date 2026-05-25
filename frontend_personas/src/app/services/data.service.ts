@@ -23,7 +23,7 @@ export interface DemographicsSummary {
   providedIn: 'root'
 })
 export class DataService {
-  private http = inject(HttpClient);
+  private http = inject(HttpClient) as any;
   // Real API URL (FastAPI)
   private apiUrl = 'http://localhost:8000/api/registros';
 
@@ -41,7 +41,7 @@ export class DataService {
 
   getRegistros(): Observable<Registro[]> {
     // Try to call the real API, if it fails (e.g., 401 Unauthorized or CORS), return mock data
-    return this.http.get<Registro[]>(this.apiUrl).pipe(
+    return this.http.get(this.apiUrl).pipe(
       catchError(err => {
         console.warn('Real API failed or returned error. Using mock data for dashboard visualization.', err);
         return of(this.mockData);

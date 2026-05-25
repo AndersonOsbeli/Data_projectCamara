@@ -66,41 +66,66 @@ export class Dashboard implements OnInit {
     const isLightTheme = document.body.classList.contains('light-theme');
     this.updateChartTheme(isLightTheme);
 
-    this.dataService.getSummary().subscribe({
-      next: (sum) => {
-        this.summary = sum;
+    // 🚀 OPTIMIZACIÓN FULL-STACK: Centralizamos el cálculo sobre getRegistros() para blindar el Dashboard contra retrasos del servicio summary
+    this.dataService.getRegistros().subscribe({
+      next: (registros: any[]) => {
+        if (!registros || registros.length === 0) {
+          console.warn('[DASHBOARD]: No se encontraron filas de tránsito en el archivo del backend.');
+          return;
+        }
+
+        console.log('[DASHBOARD]: Sincronizando en caliente un total de:', registros.length, 'registros.');
+
+        // 1. Calculamos las métricas analíticas principales basándonos en tu Excel relacional
+        const total = registros.length;
+        
+        // Mapeo flexible para strings guardados por OpenCV (.toLowerCase() previene fallos por mayúsculas)
+        const males = registros.filter(r => 
+          r.genero && (r.genero.toLowerCase() === 'hombre' || r.genero.toLowerCase() === 'masculino' || r.genero.toLowerCase() === 'm')
+        ).length;
+
+        const females = registros.filter(r => 
+          r.genero && (r.genero.toLowerCase() === 'mujer' || r.genero.toLowerCase() === 'femenino' || r.genero.toLowerCase() === 'f')
+        ).length;
+
+        // Sincronizamos el objeto summary que leen tus tres tarjetas del HTML
+        this.summary = {
+          total: total,
+          males: males,
+          females: females,
+          animals: 0
+        };
+
+        // 2. Forzamos la actualización inmediata del gráfico de pastel (Doughnut)
         this.doughnutChartData = {
           labels: this.doughnutChartLabels,
           datasets: [{
-            data: [sum.males, sum.females],
+            data: [males, females],
             backgroundColor: ['#5142f5', '#f542a4'],
             borderWidth: 0
           }]
         };
-        this.cdr.detectChanges();
-        this.charts?.forEach(chart => chart.update());
-      },
-      error: (err) => console.error('Error fetching summary:', err)
-    });
 
-    this.dataService.getRegistros().subscribe({
-      next: (registros) => {
-        // Count all locations
+        // 3. Procesamos los datos geográficos para el gráfico de barras (Locations)
         const locationsCount: { [key: string]: number } = {};
         registros.forEach(r => {
           const loc = (r.lugar || 'Desconocido').trim();
           locationsCount[loc] = (locationsCount[loc] || 0) + 1;
         });
 
-        // Sort by count descending
+        // Ordenamos ubicaciones de mayor a menor
         this.allLocationsData = Object.entries(locationsCount)
           .map(([name, count]) => ({ name, count }))
           .sort((a, b) => b.count - a.count);
 
-        // Show top 3 by default
+        // Pintamos el Top 3 de ubicaciones en las barras
         this.applyFilter();
+        
+        // Fuerza el redibujado de componentes estructurales de Angular v21
+        this.cdr.detectChanges();
+        this.charts?.forEach(chart => chart.update());
       },
-      error: (err) => console.error('Error fetching registros:', err)
+      error: (err) => console.error('Error fetching registros para métricas:', err)
     });
   }
 
@@ -128,10 +153,8 @@ export class Dashboard implements OnInit {
     let filtered: { name: string; count: number }[];
 
     if (this.selectedLocation) {
-      // Show only the selected location
       filtered = this.allLocationsData.filter(l => l.name === this.selectedLocation);
     } else {
-      // Show top 3
       filtered = this.allLocationsData.slice(0, 3);
     }
 
@@ -156,4 +179,3 @@ export class Dashboard implements OnInit {
     this.applyFilter();
   }
 }
-

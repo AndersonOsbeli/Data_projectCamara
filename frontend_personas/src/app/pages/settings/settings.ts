@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 const colorMap: Record<string, string> = {
   purple: '#7c3aed',
@@ -25,7 +26,7 @@ const rgbMap: Record<string, string> = {
   templateUrl: './settings.html',
   styleUrl: './settings.scss'
 })
-export class Settings implements OnInit {
+export class Settings implements OnInit, AfterViewInit {
   // Navigation
   activeTab = 'apariencia';
 
@@ -55,9 +56,35 @@ export class Settings implements OnInit {
   toastMessage = '';
   showToast = false;
 
+  // VARIABLES PARA BIOMETRÍA FACIAL (FACE ID)
+  isFaceIDScanning = false;
+  faceIDStream: MediaStream | null = null;
+  usuarioLogueado: any = null;
+
+  // INYECCIONES STANDALONE
+  private http: any = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
+
+  @ViewChild('faceVideo', { static: false }) faceVideo!: ElementRef<HTMLVideoElement>;
+  @ViewChild('faceCanvas', { static: false }) faceCanvas!: ElementRef<HTMLCanvasElement>;
+
+  constructor() {
+    const sesion = localStorage.getItem('usuario');
+    if (sesion) {
+      this.usuarioLogueado = JSON.parse(sesion);
+      console.log('[SETTINGS]: Entorno listo para:', this.usuarioLogueado.correo);
+    }
+  }
+
+  // 🚀 CICLO DE VIDA 1
   ngOnInit() {
     this.loadSettings();
     this.applyAllSettings();
+  }
+
+  // 🚀 CICLO DE VIDA 2: Integrado correctamente dentro del cuerpo de la clase
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   loadSettings() {
@@ -326,5 +353,95 @@ export class Settings implements OnInit {
     setTimeout(() => {
       this.showToast = false;
     }, 3500);
+  }
+
+  // =======================================================
+  // 🚀 NUEVOS MÉTODOS ASÍNCRONOS DE MOTOR BIOMÉTRICO (FACE ID)
+  // =======================================================
+  // 🚀 OPTIMIZADO: Soluciona el error NG0100 empujando el cambio al siguiente macro-task tick
+  async activarCamaraEnrolamiento() {
+    if (!this.usuarioLogueado || !this.usuarioLogueado.correo) {
+      this.triggerToast('Error: No se encontró una sesión activa.');
+      return;
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      this.triggerToast('El navegador no posee API para interactuar con cámaras.');
+      return;
+    }
+
+    // 🌟 ENVOLVENTE SEGURO: Empuja la mutación de estado fuera del ciclo de verificación activo
+    setTimeout(async () => {
+      try {
+        this.isFaceIDScanning = true;
+        this.cdr.detectChanges(); // Fuerza la sincronización del DOM de forma segura
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: false
+        });
+
+        this.faceIDStream = stream;
+
+        setTimeout(() => {
+          if (this.faceVideo?.nativeElement) {
+            this.faceVideo.nativeElement.srcObject = stream;
+          }
+        }, 250);
+
+        // Captura automática tras 3 segundos de estabilidad facial
+        setTimeout(() => {
+          this.captureAndProcessFace();
+        }, 3000);
+
+      } catch (error) {
+        this.isFaceIDScanning = false;
+        this.cdr.detectChanges();
+        this.triggerToast('Cámara ocupada. Libérala en Python o en otra pestaña.');
+      }
+    }, 0); // Ciclo cero forzado
+  }
+
+  captureAndProcessFace() {
+    const video = this.faceVideo?.nativeElement;
+    const canvas = this.faceCanvas?.nativeElement;
+    const context = canvas?.getContext('2d');
+
+    if (video && canvas && context) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      const base64Image = canvas.toDataURL('image/jpeg');
+      this.stopFaceIDScan();
+
+      const payload = {
+        correo: this.usuarioLogueado.correo,
+        image_base64: base64Image
+      };
+
+      this.triggerToast('Sincronizando vectores con SQL Server...');
+
+      this.http.post('http://127.0.0.1:8000/api/register-face', payload).subscribe({
+        next: (res: any) => {
+          this.triggerToast('¡Firma biométrica facial inyectada con éxito!');
+        },
+        error: (err: any) => {
+          console.error('[SETTINGS_ERROR]:', err);
+          this.triggerToast(err.error?.detail || 'Fallo al guardar vectores.');
+        }
+      });
+    }
+  }
+
+  stopFaceIDScan() {
+    setTimeout(() => {
+      this.isFaceIDScanning = false;
+      if (this.faceIDStream) {
+        this.faceIDStream.getTracks().forEach(track => track.stop());
+      }
+      this.faceIDStream = null;
+      this.cdr.detectChanges(); // Notifica el cambio de estado limpio al DOM
+    }, 0);
   }
 }

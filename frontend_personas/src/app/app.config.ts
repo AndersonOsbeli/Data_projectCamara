@@ -1,6 +1,7 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+// 1. Modificamos esta importación para incluir 'withFetch'
+import { provideHttpClient, withFetch } from '@angular/common/http'; 
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
@@ -14,7 +15,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(),
+    // 2. Le agregamos 'withFetch()' aquí adentro
+    provideHttpClient(withFetch()), 
     provideCharts(withDefaultRegisterables()),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth())

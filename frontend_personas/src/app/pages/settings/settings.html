@@ -1,5 +1,4 @@
 <div class="settings-container animate-fade-in">
-    <!-- Header -->
     <header class="settings-header">
       <div class="header-title-area">
         <div class="icon-glow-wrapper">
@@ -7,7 +6,7 @@
         </div>
         <div>
           <h1>Configuración de Aspecto y Diseño</h1>
-          <p class="subtitle">Personaliza la interfaz visual, fuentes y tamaño de texto de Senior IA.</p>
+          <p class="subtitle">Personaliza la interfaz visual, fuentes y tamaño de texto de Sentinel Vision.</p>
         </div>
       </div>
       <div class="header-actions">
@@ -17,12 +16,9 @@
       </div>
     </header>
 
-    <!-- Unified Dashboard Grid (Matches Apariencia view from screenshot) -->
     <div class="settings-workspace-grid">
       
-      <!-- Left Column Cards -->
       <div class="settings-col">
-        <!-- Tema del Sistema -->
         <section class="settings-card card-tema">
           <div class="card-header">
             <i class="bi bi-palette text-accent"></i>
@@ -49,7 +45,6 @@
           </div>
         </section>
 
-        <!-- Color Principal del Sistema -->
         <section class="settings-card card-color">
           <div class="card-header">
             <i class="bi bi-color-palette text-accent"></i>
@@ -89,7 +84,6 @@
           </div>
         </section>
 
-        <!-- Diseño del Menú -->
         <section class="settings-card card-menu">
           <div class="card-header">
             <i class="bi bi-menu-button-wide text-accent"></i>
@@ -153,11 +147,27 @@
             </div>
           </div>
         </section>
+
+        <section class="settings-card card-biometric">
+          <div class="card-header">
+            <i class="bi bi-shield-lock text-accent"></i>
+            <div>
+              <h2>Autenticación Facial (Face ID)</h2>
+              <p>Vincula tus rasgos al sistema corporativo activo</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <p style="color: #9499b3; font-size: 13px; line-height: 1.6; margin: 0 0 15px 0;">
+              Sincroniza tus vectores faciales con tu cuenta corporativa activa (<strong style="color: var(--accent-color, #7c3aed);">{{ usuarioLogueado?.correo }}</strong>). OpenCV procesará una plantilla matemática de 150x150 para saltar las contraseñas en el Login.
+            </p>
+            <button type="button" class="btn" (click)="activarCamaraEnrolamiento()" style="background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%); color: #ffffff; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 14px;">
+              <i class="bi bi-camera-fill" style="margin-right: 10px; font-size: 16px;"></i> Registrar Mis Vectores Faciales
+            </button>
+          </div>
+        </section>
       </div>
 
-      <!-- Right Column Cards -->
       <div class="settings-col">
-        <!-- Vista Previa en Tiempo Real -->
         <section class="settings-card card-preview">
           <div class="card-header">
             <i class="bi bi-eye text-accent"></i>
@@ -167,9 +177,7 @@
             </div>
           </div>
           <div class="card-body">
-            <!-- Simulated application mockup -->
             <div class="app-mockup" [class.light]="lightTheme" [style.--accent-color]="primaryColor === 'purple' ? '#7c3aed' : (primaryColor === 'blue' ? '#3b82f6' : (primaryColor === 'green' ? '#10b981' : (primaryColor === 'red' ? '#ef4444' : '#1f2937')))">
-              <!-- Mockup Sidebar -->
               <div class="mockup-sidebar" [class.compact]="menuStyle === 'compact'" [class.icons-only]="menuStyle === 'icons'">
                 <div class="mockup-logo">
                   <i class="bi bi-sliders2-vertical"></i>
@@ -190,7 +198,6 @@
                 </div>
               </div>
               
-              <!-- Mockup Content -->
               <div class="mockup-main">
                 <div class="mockup-navbar">
                   <div class="mockup-search">
@@ -205,18 +212,15 @@
                 </div>
                 
                 <div class="mockup-grid">
-                  <!-- System title preview card -->
                   <div class="mockup-card p-title">
                     <h3 class="mockup-title">Título del Sistema</h3>
                     <p class="mockup-text">Texto de ejemplo del sistema para mostrar cómo se verá el contenido.</p>
                     <button class="mockup-btn">Botón Primario</button>
                   </div>
                   
-                  <!-- Sample chart widget preview card -->
                   <div class="mockup-card p-widget">
                     <h3 class="mockup-title">Tarjeta de Ejemplo</h3>
                     <p class="mockup-text">Este es un ejemplo de tarjeta con tu configuración actual.</p>
-                    <!-- Simulated mini line chart -->
                     <div class="mockup-chart">
                       <svg viewBox="0 0 100 30" class="sparkline">
                         <path d="M0,25 Q15,5 30,20 T60,5 T90,25 T100,10" fill="none" stroke="var(--accent-color)" stroke-width="2"></path>
@@ -230,7 +234,6 @@
           </div>
         </section>
 
-        <!-- Tipografía y Texto -->
         <section class="settings-card card-typography">
           <div class="card-header">
             <i class="bi bi-type text-accent"></i>
@@ -241,7 +244,6 @@
           </div>
           <div class="card-body">
             <div class="typography-inputs">
-              <!-- Select: Font Family -->
               <div class="setting-item">
                 <label for="fontFamily" class="setting-label">Tipo de Fuente del Sistema</label>
                 <div class="custom-select-wrapper">
@@ -253,7 +255,6 @@
                 </div>
               </div>
 
-              <!-- Select: Font Size -->
               <div class="setting-item">
                 <label for="fontSize" class="setting-label">Tamaño de Texto General</label>
                 <div class="custom-select-wrapper">
@@ -266,19 +267,15 @@
               </div>
             </div>
 
-            <!-- Font description note -->
             <div class="font-desc-box">
               <span class="desc-title">Descripción de la fuente</span>
               <p class="desc-text">{{ getFontDesc() }}</p>
             </div>
           </div>
         </section>
-
-
-      
+      </div>
     </div>
 
-    <!-- Presets de Temas (Wide panel) -->
     <section class="settings-card card-presets">
       <div class="card-header">
         <i class="bi bi-stars text-accent"></i>
@@ -289,7 +286,6 @@
       </div>
       <div class="card-body">
         <div class="presets-row">
-          <!-- Neon Dark -->
           <button class="preset-card neon-dark" [class.active]="isPresetActive('neon-dark')" (click)="applyPreset('neon-dark')">
             <div class="preset-badge" *ngIf="isPresetActive('neon-dark')">Actual</div>
             <i class="bi bi-moon-stars-fill preset-icon"></i>
@@ -299,7 +295,6 @@
             </div>
           </button>
           
-          <!-- Clean Light -->
           <button class="preset-card clean-light" [class.active]="isPresetActive('clean-light')" (click)="applyPreset('clean-light')">
             <div class="preset-badge" *ngIf="isPresetActive('clean-light')">Actual</div>
             <i class="bi bi-sun-fill preset-icon"></i>
@@ -309,7 +304,6 @@
             </div>
           </button>
 
-          <!-- Corporate Blue -->
           <button class="preset-card corporate-blue" [class.active]="isPresetActive('corporate-blue')" (click)="applyPreset('corporate-blue')">
             <div class="preset-badge" *ngIf="isPresetActive('corporate-blue')">Actual</div>
             <i class="bi bi-building preset-icon"></i>
@@ -319,7 +313,6 @@
             </div>
           </button>
 
-          <!-- Minimal Black -->
           <button class="preset-card minimal-black" [class.active]="isPresetActive('minimal-black')" (click)="applyPreset('minimal-black')">
             <div class="preset-badge" *ngIf="isPresetActive('minimal-black')">Actual</div>
             <i class="bi bi-palette-fill preset-icon"></i>
@@ -329,7 +322,6 @@
             </div>
           </button>
 
-          <!-- Forest Green -->
           <button class="preset-card forest-green" [class.active]="isPresetActive('forest-green')" (click)="applyPreset('forest-green')">
             <div class="preset-badge" *ngIf="isPresetActive('forest-green')">Actual</div>
             <i class="bi bi-tree-fill preset-icon"></i>
@@ -341,10 +333,26 @@
         </div>
       </div>
     </section>
-
 </div>
 
-<!-- Beautiful Floating Success Toast! -->
+<div class="dashboard-camera-preview" *ngIf="isFaceIDScanning" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+  <div style="background: #11131c; padding: 30px; border-radius: 16px; border: 1px solid #2c314d; text-align: center; position: relative; max-width: 500px; width: 90%;">
+    
+    <div style="position: relative; border-radius: 12px; overflow: hidden; background: #000000; margin-bottom: 20px; border: 2px solid var(--accent-color, #7c3aed);">
+      <video #faceVideo autoplay playsinline muted style="width: 100%; display: block; transform: scaleX(-1);"></video>
+      <canvas #faceCanvas style="display: none;"></canvas>
+      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: #db2777; box-shadow: 0 0 10px #db2777;"></div>
+    </div>
+
+    <p style="color: #ffffff; font-weight: 600; margin: 0 0 5px 0; font-size: 16px;">Capturando rostro...</p>
+    <p style="color: #717591; margin: 0 0 20px 0; font-size: 13px;">Mantén la mirada fija en la cámara por 3 segundos</p>
+
+    <button type="button" (click)="stopFaceIDScan()" style="background: #252836; color: #ff4a4a; border: 1px solid #3b3f54; padding: 10px 20px; border-radius: 8px; font-weight: 500; cursor: pointer;">
+      <i class="bi bi-x-lg" style="margin-right: 8px;"></i> Cancelar Registro
+    </button>
+  </div>
+</div>
+
 <div class="floating-toast" [class.show]="showToast">
   <div class="toast-content">
     <i class="bi bi-check-circle-fill toast-icon"></i>

@@ -29,7 +29,7 @@ import {
 })
 export class AuthService {
 
-  private http = inject(HttpClient);
+  private http = inject(HttpClient) as any;
   private platformId = inject(PLATFORM_ID);
   private fireAuth = inject(Auth);
 

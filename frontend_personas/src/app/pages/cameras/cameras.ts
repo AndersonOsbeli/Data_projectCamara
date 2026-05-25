@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
@@ -16,7 +16,7 @@ interface Registro {
 @Component({
   selector: 'app-cameras',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, TitleCasePipe, FormsModule],
+  imports: [CommonModule, TitleCasePipe, FormsModule],
   templateUrl: './cameras.html',
   styleUrls: ['./cameras.scss'],
 })
@@ -33,6 +33,11 @@ export class Cameras implements OnInit, OnDestroy {
 
   private baseStreamUrl = 'http://localhost:8000/api/camera/stream';
   private apiUrl = 'http://localhost:8000/api';
+  
+  // 🚀 INYECCIONES DE DEPENDENCIAS STANDALONE MODERNAS
+  private http = inject(HttpClient) as any;
+  private cdr = inject(ChangeDetectorRef);
+  private sanitizer = inject(DomSanitizer);
 
   recentRegistros: Registro[] = [];
   paginatedRegistros: Registro[] = [];
@@ -42,11 +47,8 @@ export class Cameras implements OnInit, OnDestroy {
 
   private pollInterval: any;
 
-  constructor(
-    private http: HttpClient,
-    private sanitizer: DomSanitizer,
-    private cdr: ChangeDetectorRef
-  ) {}
+  // 🚀 CONSTRUCTOR LIMPIO (Sin variables duplicadas para evitar errores TS)
+  constructor() {}
 
   ngOnInit() {
     this.refreshStreamUrl();
@@ -69,7 +71,7 @@ export class Cameras implements OnInit, OnDestroy {
     this.cameraRunning = false;
     this.cdr.detectChanges();
 
-    this.http.post<any>(`${this.apiUrl}/camera/source`, { source }).subscribe({
+    this.http.post(`${this.apiUrl}/camera/source`, { source }).subscribe({
       next: () => {
         setTimeout(() => {
           this.cameraRunning = true;
@@ -86,11 +88,11 @@ export class Cameras implements OnInit, OnDestroy {
   }
 
   checkStatus() {
-    this.http.get<any>(`${this.apiUrl}/camera/status`).subscribe({
+    this.http.get(`${this.apiUrl}/camera/status`).subscribe({
       next: res => { this.detectionRunning = res.detection_running; this.cdr.detectChanges(); },
       error: err => console.error('Status error:', err)
     });
-    this.http.get<any>(`${this.apiUrl}/camera/location`).subscribe({
+    this.http.get(`${this.apiUrl}/camera/location`).subscribe({
       next: res => { this.currentLocation = res.lugar; this.locationInput = res.lugar; this.cdr.detectChanges(); },
       error: err => console.error('Location error:', err)
     });
@@ -98,7 +100,7 @@ export class Cameras implements OnInit, OnDestroy {
 
   updateLocation() {
     if (!this.locationInput.trim()) return;
-    this.http.post<any>(`${this.apiUrl}/camera/location`, { lugar: this.locationInput }).subscribe({
+    this.http.post(`${this.apiUrl}/camera/location`, { lugar: this.locationInput }).subscribe({
       next: res => { this.currentLocation = res.lugar; this.cdr.detectChanges(); },
       error: err => console.error('Update location error:', err)
     });
@@ -106,7 +108,7 @@ export class Cameras implements OnInit, OnDestroy {
 
   toggleDetection() {
     this.detectionRunning = !this.detectionRunning;
-    this.http.post<any>(`${this.apiUrl}/camera/toggle`, {}).subscribe({
+    this.http.post(`${this.apiUrl}/camera/toggle`, {}).subscribe({
       next: res => { this.detectionRunning = res.detection_running; this.cdr.detectChanges(); },
       error: err => { this.detectionRunning = !this.detectionRunning; console.error(err); this.cdr.detectChanges(); }
     });
@@ -118,7 +120,7 @@ export class Cameras implements OnInit, OnDestroy {
   }
 
   fetchRecentRegistros() {
-    this.http.get<Registro[]>(`${this.apiUrl}/registros/recent?limit=50`).subscribe({
+    this.http.get(`${this.apiUrl}/registros/recent?limit=50`).subscribe({
       next: data => {
         this.recentRegistros = data;
         this.totalPages = Math.ceil(data.length / this.itemsPerPage) || 1;

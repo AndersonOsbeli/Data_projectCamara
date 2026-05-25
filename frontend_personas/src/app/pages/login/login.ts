@@ -2,6 +2,7 @@ import { Component, inject, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA, Chang
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -13,22 +14,30 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './login.scss'
 })
 export class Login {
-
+  // --- VARIABLES DE FORMULARIO ---
   email = '';
   password = '';
   confirmPassword = '';
   codigoOTP = '';
   errorMsg = '';
 
+  // --- VARIABLES DE ESTADO LÓGICO ---
   showPassword = false;
   isRegisterMode = false;
   mostrandoOTP = false;
   googleUserTempData: any = null;
 
+  // --- VARIABLES ASOCIADAS A FACE ID ---
   isFaceIDScanning = false;
   faceIDStream: MediaStream | null = null;
 
-  // ── Toast notification ───────────────────────────────────────────────────────
+  // --- INYECCIONES STANDALONE ---
+  private http: any = inject(HttpClient); 
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
+
+  // --- CONTROL DE NOTIFICACIONES (TOAST) ---
   toast = {
     visible: false,
     type: 'success' as 'success' | 'error' | 'info',
@@ -37,11 +46,14 @@ export class Login {
   };
   private toastTimer: any = null;
 
-  showToast(
-    message: string,
-    type: 'success' | 'error' | 'info' = 'success',
-    title?: string
-  ) {
+  @ViewChild('faceVideo', { static: false }) faceVideo!: ElementRef<HTMLVideoElement>;
+  @ViewChild('faceCanvas', { static: false }) faceCanvas!: ElementRef<HTMLCanvasElement>;
+
+  constructor() {
+    console.log('[SYSTEM]: Componente Login inicializado correctamente.');
+  }
+
+  showToast(message: string, type: 'success' | 'error' | 'info' = 'success', title?: string) {
     if (this.toastTimer) clearTimeout(this.toastTimer);
     this.toast = {
       visible: true,
@@ -49,7 +61,7 @@ export class Login {
       title: title ?? (type === 'success' ? '¡Éxito!' : type === 'error' ? 'Error' : 'Información'),
       message,
     };
-    this.cdr.detectChanges(); // forzar render inmediato
+    this.cdr.detectChanges();
     this.toastTimer = setTimeout(() => this.closeToast(), 3500);
   }
 
@@ -58,372 +70,276 @@ export class Login {
     this.cdr.detectChanges();
   }
 
-  @ViewChild('faceVideo', { static: false })
-  faceVideo!: ElementRef<HTMLVideoElement>;
-
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private cdr = inject(ChangeDetectorRef);
-
-  // ── Password visibility toggle ──────────────────────────────────────────────
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
+    this.cdr.detectChanges();
   }
 
-  // ── Register mode toggle ─────────────────────────────────────────────────────
   toggleRegisterMode() {
     this.isRegisterMode = !this.isRegisterMode;
     this.confirmPassword = '';
     this.errorMsg = '';
+    this.email = '';
+    this.password = '';
+    console.log('[ACTION]: Conmutando vista. ¿Modo registro?:', this.isRegisterMode);
+    this.cdr.detectChanges();
   }
 
-  // ── LOGIN / REGISTER REAL ───────────────────────────────────────────────────
-  onValidateCredentials() {
-
-    this.errorMsg = '';
+  // 🚀 INTERCEPTOR DEL DOM: Resuelve el problema del doble clic capturando valores nativos al instante
+  onValidateCredentialsDirect(txtEmail: string, txtPass: string, txtConfirm: string) {
+    console.log('[DOM-EVENT]: Click detectado de forma síncrona.');
+    
+    this.email = txtEmail ? txtEmail.trim() : '';
+    this.password = txtPass ? txtPass.trim() : '';
+    this.confirmPassword = txtConfirm ? txtConfirm.trim() : '';
 
     if (!this.email || !this.password) {
-      this.showToast(
-        'Ambos campos son obligatorios. Por favor ingresa tu correo y contraseña.',
-        'error',
-        'Campos incompletos'
-      );
+      this.showToast('El correo y la contraseña son obligatorios.', 'error', 'Campos incompletos');
       return;
     }
 
-    // ==========================
-    // REGISTRO REAL
-    // ==========================
-    if (this.isRegisterMode) {
+    // Enviamos los datos puros por parámetros para saltarnos el lag de asignación asíncrona de variables
+    this.ejecutarFlujoAutenticacion(this.email, this.password, this.confirmPassword);
+  }
 
-      if (
-        this.password !==
-        this.confirmPassword
-      ) {
-        this.showToast(
-          'Las contraseñas no coinciden. Verifícalas e inténtalo de nuevo.',
-          'error',
-          'Error de validación'
-        );
+  // 🚀 MOTOR DE AUTENTICACIÓN: Procesa las peticiones HTTP limpias al backend
+  private ejecutarFlujoAutenticacion(correo: string, pass: string, confirm: string) {
+    if (this.isRegisterMode) {
+      if (pass !== confirm) {
+        this.showToast('Las contraseñas ingresadas no coinciden.', 'error', 'Validación fallida');
         return;
       }
 
-      this.authService
-        .register(
-          this.email,
-          this.password
-        )
-        .subscribe({
+      this.showToast('Registrando tus credenciales en el servidor...', 'info', 'Procesando...');
 
-          next: () => {
-
-            // Registro exitoso → mostrar toast primero
-            this.isRegisterMode = false;
-            this.confirmPassword = '';
-
-            this.showToast(
-              '¡Cuenta creada! Enviando código de verificación a tu correo...',
-              'success',
-              '¡Registro exitoso!'
-            );
-
-            // Esperar 1.8s para que el usuario vea el toast, luego enviar OTP
-            setTimeout(() => {
-
-              this.authService
-                .login(this.email, this.password)
-                .subscribe({
-
-                  next: (response: any) => {
-
-                    // Solo mostrar OTP, el login real en Angular se hace al verificar
-                    this.mostrandoOTP = true;
-                    this.cdr.detectChanges();
-                  },
-
-                  error: (err: any) => {
-                    this.showToast(
-                      err.error?.detail || 'Cuenta creada. Inicia sesión para continuar.',
-                      'info',
-                      'Información'
-                    );
-                  }
-                });
-
-            }, 1800);
-          },
-
-
-          error: (err: any) => {
-            this.showToast(
-              err.error?.detail || 'No se pudo registrar',
-              'error',
-              'Error de Registro'
-            );
-          }
-        });
-
-      return;
-
-    }
-
-    // ==========================
-    // LOGIN REAL
-    // ==========================
-    this.authService
-      .login(
-        this.email,
-        this.password
-      )
-      .subscribe({
-
-        next: (response: any) => {
-
-          this.mostrandoOTP = true;
+      this.http.post('http://127.0.0.1:8000/api/register', {
+        correo: correo,
+        password: pass
+      }).subscribe({
+        next: (res: any) => {
+          console.log('[BACKEND]: Usuario inyectado con éxito en SQL Server.', res);
+          this.showToast('¡Cuenta creada! Se ha despachado un código OTP de seguridad.', 'success', '¡Registro Exitoso!');
           
-          this.showToast(
-            'Código OTP enviado a tu correo',
-            'info',
-            'Verificación'
-          );
-          
-          this.cdr.detectChanges();
-        },
+          this.isRegisterMode = false;
+          this.confirmPassword = '';
 
-        error: (err: any) => {
-          this.showToast(
-            err.error?.detail || 'Correo o contraseña incorrectos',
-            'error',
-            'Error de Acceso'
-          );
-        }
-      });
-  }
-
-  // ── Register (ahora se maneja en onValidateCredentials) ────────────────────
-  onRegister() {
-    return;
-  }
-
-  // ── OTP / Dashboard entry ───────────────────────────────────────────────────
-  onEnterDashboard() {
-
-    this.errorMsg = '';
-
-    if (!this.codigoOTP || this.codigoOTP.length < 6) {
-      this.showToast(
-        'El código de verificación debe tener 6 dígitos.',
-        'error',
-        'Código incompleto'
-      );
-      return;
-    }
-
-    this.authService
-      .verifyOTP(this.email, this.codigoOTP)
-      .subscribe({
-
-        next: () => {
-
-          // === AQUÍ SE GUARDA EL USUARIO TRAS VERIFICAR OTP ===
-          if (this.googleUserTempData) {
-            localStorage.setItem('usuario', JSON.stringify(this.googleUserTempData));
-            this.googleUserTempData = null;
-          } else {
-            localStorage.setItem('usuario', JSON.stringify({
-              correo: this.email,
-              nombre: this.email.split('@')[0],
-              proveedor: 'local'
-            }));
-          }
-
-          this.showToast(
-            '¡Verificación exitosa! Entrando al sistema...',
-            'success',
-            '¡Acceso concedido!'
-          );
-
+          // Disparar login automático para generar el OTP del usuario recién creado
           setTimeout(() => {
-            this.authService.setLoggedIn();
-            this.router.navigate(['/dashboard']);
+            this.http.post('http://127.0.0.1:8000/api/login', { correo: correo, password: pass }).subscribe({
+              next: () => {
+                this.mostrandoOTP = true;
+                this.cdr.detectChanges();
+              },
+              error: (err: any) => {
+                console.error('[AUTH_ERROR]: Falló el login automático post-registro:', err);
+                this.showToast('Tu cuenta está lista. Por favor ingresa tus datos en el Login tradicional.', 'info');
+              }
+            });
           }, 1200);
         },
-
         error: (err: any) => {
-
-          const msg = err.error?.detail || 'Código OTP incorrecto';
-
-          this.showToast(
-            msg === 'Código incorrecto'
-              ? 'El código ingresado no es válido. Revisa tu correo e intenta de nuevo.'
-              : msg === 'OTP no encontrado'
-              ? 'El código ha expirado o no existe. Vuelve al login y solicita uno nuevo.'
-              : msg,
-            'error',
-            'Verificación fallida'
-          );
+          console.error('[SERVER_ERROR]: Registro rechazado:', err);
+          this.showToast(err.error?.detail || 'No se pudo crear la cuenta de usuario.', 'error', 'Error de Registro');
         }
       });
+
+    } else {
+      console.log('[BACKEND]: Solicitando envío de token OTP al correo...');
+      
+      this.http.post('http://127.0.0.1:8000/api/login', { correo: correo, password: pass }).subscribe({
+        next: () => {
+          this.mostrandoOTP = true;
+          this.showToast('Código de seguridad enviado a tu buzón.', 'success', 'Verificación');
+          this.cdr.detectChanges();
+        },
+        error: (err: any) => {
+          console.error('[AUTH_ERROR]: Acceso denegado:', err);
+          this.showToast(err.error?.detail || 'Credenciales inválidas.', 'error', 'Error de Acceso');
+        }
+      });
+    }
   }
+
+  onEnterDashboard() {
+    if (!this.codigoOTP || this.codigoOTP.length < 6) {
+      this.showToast('El token de seguridad debe tener 6 caracteres.', 'error', 'Formato Inválido');
+      return;
+    }
+
+    this.authService.verifyOTP(this.email, this.codigoOTP).subscribe({
+      next: () => {
+        if (this.googleUserTempData) {
+          localStorage.setItem('usuario', JSON.stringify(this.googleUserTempData));
+          this.googleUserTempData = null;
+        } else {
+          localStorage.setItem('usuario', JSON.stringify({
+            correo: this.email,
+            nombre: this.email.split('@')[0],
+            proveedor: 'local'
+          }));
+        }
+
+        this.showToast('Código OTP verificado. Abriendo panel analítico...', 'success', 'Acceso Concedido');
+        this.authService.setLoggedIn();
+
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']);
+        }, 1200);
+      },
+      error: (err: any) => {
+        this.showToast(err.error?.detail || 'El código ingresado es incorrecto o ya expiró.', 'error', 'Verificación fallida');
+      }
+    });
+  }
+
   onCancel() {
-
     this.mostrandoOTP = false;
-
     this.codigoOTP = '';
-
-    this.errorMsg = '';
-    
     this.googleUserTempData = null;
+    this.cdr.detectChanges();
   }
 
-  // ── Google Sign-In via Firebase ─────────────────────────────────────────────
   async onGoogleSignIn() {
     try {
-      this.errorMsg = '';
       const usuario = await this.authService.loginWithGoogle();
-
       this.googleUserTempData = usuario;
       this.email = usuario.correo;
 
-      this.showToast(
-        'Iniciando verificación. Enviando código de acceso a tu correo de Google...',
-        'info',
-        'Verificación de Google'
-      );
+      this.showToast('Autenticación federada exitosa. Generando token OTP...', 'info', 'Google Sign-In');
 
       this.authService.requestGoogleOTP(usuario.correo).subscribe({
         next: () => {
           this.mostrandoOTP = true;
-          this.showToast(
-            'Código de verificación enviado a tu cuenta de Google',
-            'success',
-            'Código enviado'
-          );
           this.cdr.detectChanges();
         },
         error: (err: any) => {
           this.googleUserTempData = null;
-          this.showToast(
-            err.error?.detail || 'No se pudo enviar el código de verificación.',
-            'error',
-            'Error de envío'
-          );
+          this.showToast(err.error?.detail || 'No se pudo despachar el código OTP de Google.', 'error');
         }
       });
-
     } catch (error: any) {
       this.googleUserTempData = null;
-      if (
-        error?.code !==
-        'auth/popup-closed-by-user'
-      ) {
-        this.showToast(
-          'No se pudo iniciar sesión con Google. Inténtalo de nuevo.',
-          'error',
-          'Google Sign-In fallido'
-        );
-
-        console.error(
-          'Google Sign-In error:',
-          error
-        );
+      if (error?.code !== 'auth/popup-closed-by-user') {
+        this.showToast('Inicio de sesión con Google interrumpido por el cliente.', 'error');
       }
     }
   }
 
-  // ── Face ID via camera ───────────────────────────────────────────────────────
-  async onFaceIDSignIn() {
+ // 🚀 OPTIMIZADO: Ahora recibe el string directo del HTML único
+  onFaceIDAction(txtEmail?: string) {
+    // Si viene un valor del DOM, lo sincronizamos síncronamente en la clase
+    if (txtEmail) {
+      this.email = txtEmail.trim();
+    }
 
-    if (
-      !navigator.mediaDevices
-        ?.getUserMedia
-    ) {
-      alert(
-        'Tu navegador no soporta acceso a la cámara.'
+    if (this.isRegisterMode) {
+      this.showToast(
+        'Para registrar tu rostro, primero crea tu cuenta tradicional. Una vez dentro del sistema podrás asociar tu Face ID.', 
+        'info', 
+        'Flujo de Enrolamiento'
       );
+    } else {
+      // Validamos el estado real del string ya sincronizado
+      if (!this.email) {
+        this.showToast(
+          'Necesitamos tu correo para extraer la plantilla matemática de la base de datos.', 
+          'error', 
+          'Escribe tu correo primero'
+        );
+        return;
+      }
+      console.log('[BIOMETRIA]: Correo validado. Iniciando captura de video para:', this.email);
+      this.startFaceIDScan('login');
+    }
+  }
+
+  async startFaceIDScan(tipo: 'login' | 'register') {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      this.showToast('Tu navegador carece de capacidades para interactuar con cámaras de video.', 'error', 'Hardware Ausente');
       return;
     }
 
     try {
-
       this.isFaceIDScanning = true;
+      this.cdr.detectChanges();
 
-      const stream =
-        await navigator.mediaDevices
-          .getUserMedia({
-            video: {
-              facingMode: 'user',
-              width: { ideal: 640 },
-              height: { ideal: 480 }
-            },
-            audio: false
-          });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+        audio: false
+      });
 
       this.faceIDStream = stream;
 
       setTimeout(() => {
-
-        if (
-          this.faceVideo
-            ?.nativeElement
-        ) {
-          this.faceVideo
-            .nativeElement
-            .srcObject = stream;
+        if (this.faceVideo?.nativeElement) {
+          this.faceVideo.nativeElement.srcObject = stream;
         }
+      }, 200);
 
-      }, 100);
-
+      // Disparo automático de análisis de facciones a los 3 segundos
       setTimeout(() => {
-
-        this.stopFaceIDScan();
-
-        this.showToast(
-          '¡Face ID verificado exitosamente! Redirigiendo al sistema...',
-          'success',
-          '¡Verificación completa!'
-        );
-
-        setTimeout(() => this.router.navigate(['/dashboard']), 1200);
-
+        this.captureAndProcessFace(tipo);
       }, 3000);
 
     } catch (error) {
-
       this.isFaceIDScanning = false;
+      this.cdr.detectChanges();
+      this.showToast('No se pudo inicializar la transmisión del hardware de video.', 'error', 'Periférico Bloqueado');
+    }
+  }
 
-      if (error instanceof DOMException) {
+  captureAndProcessFace(tipo: 'login' | 'register') {
+    const video = this.faceVideo?.nativeElement;
+    const canvas = this.faceCanvas?.nativeElement;
+    const context = canvas?.getContext('2d');
 
-        const messages: Record<string, string> = {
-          NotAllowedError: 'Acceso a la cámara denegado. Permite el acceso para usar Face ID.',
-          NotFoundError: 'No se encontró una cámara en tu dispositivo.',
-          NotReadableError: 'La cámara está siendo usada por otra aplicación.'
-        };
+    if (video && canvas && context) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      const base64Image = canvas.toDataURL('image/jpeg');
+      this.stopFaceIDScan();
 
-        this.showToast(
-          messages[error.name] ?? 'Error al acceder a la cámara. Inténtalo de nuevo.',
-          'error',
-          'Error de cámara'
-        );
+      const payload = { correo: this.email, image_base64: base64Image };
+      const urlEndpoint = tipo === 'register' ? '/api/register-face' : '/api/login-face';
 
-      } else {
+      this.showToast('Analizando coincidencia vectorial de rasgos con OpenCV...', 'info', 'Buscando Coincidencia');
 
-        this.showToast(
-          'Error desconocido al acceder a la cámara.',
-          'error',
-          'Error'
-        );
-      }
+      this.http.post(`http://127.0.0.1:8000${urlEndpoint}`, payload).subscribe({
+        next: (res: any) => {
+          this.showToast(res.message, 'success', 'Firma Biométrica Válida');
+          
+          if (tipo === 'login') {
+            localStorage.setItem('usuario', JSON.stringify({
+              correo: this.email,
+              nombre: res.nombre || this.email.split('@')[0],
+              proveedor: 'faceid'
+            }));
+
+            setTimeout(() => {
+              this.authService.setLoggedIn();
+              this.router.navigate(['/dashboard']);
+            }, 1200);
+          } else {
+            this.isRegisterMode = false;
+            this.cdr.detectChanges();
+          }
+        },
+        error: (err: any) => {
+          console.error('[BIOMETRIC_ERROR]: Error de comparación:', err);
+          this.showToast(err.error?.detail || 'El rostro no coincide con las firmas registradas en SQL Server.', 'error', 'Acceso Denegado');
+        }
+      });
     }
   }
 
   stopFaceIDScan() {
     this.isFaceIDScanning = false;
-
-    this.faceIDStream
-      ?.getTracks()
-      .forEach(t => t.stop());
-
+    if (this.faceIDStream) {
+      this.faceIDStream.getTracks().forEach(track => track.stop());
+    }
     this.faceIDStream = null;
+    this.cdr.detectChanges();
   }
 }
