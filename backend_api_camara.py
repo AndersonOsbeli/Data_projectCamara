@@ -269,7 +269,7 @@ def login_rostro(data: FaceIDSchema, db: Session = Depends(get_db)):
     # Calibramos a 0.60 para balancear los cambios de luz ambiental en tu laptop
     UMBRAL_COINCIDENCIA = 0.60
     
-    if max_val >= UBRAL_COINCIDENCIA:
+    if max_val >= UMBRAL_COINCIDENCIA:
         return {
             "status": "ok", 
             "message": f"¡Autenticación biométrica correcta! Bienvenido, {usuario.nombre}.", 
