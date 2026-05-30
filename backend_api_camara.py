@@ -227,11 +227,12 @@ def registrar_rostro(data: FaceIDSchema, db: Session = Depends(get_db)):
 # =======================================================
 @app.post("/api/login-face")
 def login_rostro(data: FaceIDSchema, db: Session = Depends(get_db)):
+    # 1. Validación de existencia del usuario y su registro biométrico
     usuario = db.query(Usuario).filter(Usuario.correo == data.correo).first()
     if not usuario or not usuario.face_embedding:
         raise HTTPException(status_code=400, detail="Este usuario no tiene configurado un registro facial.")
 
-    # 1. Fase de Procesamiento de Imagen (Webcam)
+    # 2. Fase de Decodificación y Procesamiento de la Webcam (Capa física/matriz)
     try:
         format, imgstr = data.image_base64.split(';base64,')
         img_bytes = base64.b64decode(imgstr)
@@ -244,32 +245,31 @@ def login_rostro(data: FaceIDSchema, db: Session = Depends(get_db)):
         if len(rostros) == 0:
             raise HTTPException(status_code=400, detail="No se detectó un rostro claro en la cámara.")
 
+        # Recorte y tipificación estándar a 150x150 píxeles
         (x, y, w, h) = rostros[0]
         rostro_recortado_login = gray_login[y:y+h, x:x+w]
         rostro_estandar_login = cv2.resize(rostro_recortado_login, (150, 150))
 
-        # 2. Reconstrucción del Binario de SQL Server (22,500 Bytes)
+        # 3. Reconstrucción del vector binario original desde SQL Server
         img_db_bytes = usuario.face_embedding
         rostro_estandar_db = np.frombuffer(img_db_bytes, dtype=np.uint8).reshape((150, 150))
 
-        # 3. Comparación por Correlación de Plantillas
+        # 4. Ejecución del algoritmo analítico (Template Matching)
         res = cv2.matchTemplate(rostro_estandar_login, rostro_estandar_db, cv2.TM_CCOEFF_NORMED)
         _, max_val, _, _ = cv2.minMaxLoc(res)
 
     except HTTPException as http_ex:
-        # Si el error fue que no se detectó el rostro, lo dejamos pasar intacto
+        # Mantiene intactos los errores controlados (ej: "No se detectó rostro")
         raise http_ex
     except Exception as e:
-        # Si falló la decodificación de bytes o el reshape de numpy
+        # Atrapa errores de corrupción de bytes o manipulación del buffer
         raise HTTPException(status_code=400, detail=f"Error en procesamiento de imagen: {str(e)}")
 
-    # 4. Fase de Validación de Umbrales Matemáticos (Fuera del Try principal)
-    # Ajustamos el umbral a 0.60 para mitigar variaciones de iluminación de última hora
-    UMBRAL_COINCIDENCIA = 0.60 
+    # 5. Fase de Umbral de Coincidencia Pura (Evaluación Estricta de Seguridad)
+    # Calibramos a 0.60 para balancear los cambios de luz ambiental en tu laptop
+    UMBRAL_COINCIDENCIA = 0.60
     
-    # 💡 BYPASS DE INGENIERÍA PARA LA DEMO:
-    # Si la IA da luz verde O si eres tú ingresando con tu cuenta principal, se concede el acceso
-    if max_val >= UMBRAL_COINCIDENCIA or data.correo == "juanantonio778@gmail.com":
+    if max_val >= UBRAL_COINCIDENCIA:
         return {
             "status": "ok", 
             "message": f"¡Autenticación biométrica correcta! Bienvenido, {usuario.nombre}.", 
@@ -277,7 +277,7 @@ def login_rostro(data: FaceIDSchema, db: Session = Depends(get_db)):
             "score_similitud": float(max_val)
         }
     else:
-        # Ahora sí, devolverá un 401 puro que Angular procesará correctamente
+        # 🚨 EVALUACIÓN REAL: Si no alcanza el umbral matemático, el acceso se rechaza por completo.
         raise HTTPException(
             status_code=401, 
             detail="El rostro analizado no coincide con las firmas digitales de SQL Server."
