@@ -1,145 +1,179 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule, TitleCasePipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-
-interface Registro {
-  id_registro: string;
-  clase: string;
-  genero: string;
-  fecha: string;
-  hora: string;
-  lugar: string;
-}
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-cameras',
   standalone: true,
-  imports: [CommonModule, TitleCasePipe, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './cameras.html',
-  styleUrls: ['./cameras.scss'],
+  styleUrls: ['./cameras.scss']
 })
 export class Cameras implements OnInit, OnDestroy {
-  cameraRunning = true;
-  detectionRunning = false;
-  streamUrl: SafeUrl = '';
-  currentLocation: string = '';
-  locationInput: string = '';
-
-  // Fuente de video
-  cameraType: 'local' | 'ip' = 'local';
-  ipAddress: string = 'http://192.168.1.15:4747/video';
-
-  private baseStreamUrl = 'http://localhost:8000/api/camera/stream';
-  private apiUrl = 'http://localhost:8000/api';
-  
-  // 🚀 INYECCIONES DE DEPENDENCIAS STANDALONE MODERNAS
-  private http = inject(HttpClient) as any;
+  // --- INYECCIONES NATIVAS DE ANGULAR ---
+  private http: HttpClient = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
-  private sanitizer = inject(DomSanitizer);
+  private privateApiUrl = 'http://127.0.0.1:8000/api';
 
-  recentRegistros: Registro[] = [];
-  paginatedRegistros: Registro[] = [];
+  // --- URL DE TRANSMISIÓN DE VIDEO PARA EL [src] DEL HTML ---
+  streamUrl = 'http://127.0.0.1:8000/api/camera/stream';
+
+  // --- VARIABLES DE ESTADO HARDWARE EXIGIDAS POR TU TEMPLATE ---
+  isCameraRunning = false;
+  isDetectionRunning = false;
+  lugarActual = 'Cámara Principal';
+  nuevoLugarInput = '';
+
+  // Configuración de fuentes (Cámara PC vs DroidCam)
+  cameraType: 'local' | 'ip' = 'local';
+  ipAddress = 'http://192.168.1.100:4747/video'; // Valor por defecto
+
+  // 🚀 INTERRUPTORES LOGICOS ASOCIADOS A LOS COMPORTAMIENTOS DEL HTML
+  get cameraRunning(): boolean { return this.isCameraRunning; }
+  set cameraRunning(value: boolean) { this.isCameraRunning = value; }
+
+  get detectionRunning(): boolean { return this.isDetectionRunning; }
+  set detectionRunning(value: boolean) { this.isDetectionRunning = value; }
+
+  get locationInput(): string { return this.nuevoLugarInput; }
+  set locationInput(value: string) { this.nuevoLugarInput = value; }
+
+  get currentLocation(): string { return this.lugarActual; }
+
+  // --- PIPELINE DE REGISTROS ANALÍTICOS (TABLAS Y FEEDS) ---
+  registrosRecientes: any[] = [];
+  get recentRegistros(): any[] { return this.registrosRecientes; }
+
+  // --- SISTEMA DE PAGINACIÓN NATIVA DEL CLIENTE ---
   currentPage = 1;
   itemsPerPage = 10;
   totalPages = 1;
 
-  private pollInterval: any;
+  get paginatedRegistros(): any[] {
+    if (!this.registrosRecientes || this.registrosRecientes.length === 0) return [];
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.registrosRecientes.slice(startIndex, startIndex + this.itemsPerPage);
+  }
 
-  // 🚀 CONSTRUCTOR LIMPIO (Sin variables duplicadas para evitar errores TS)
-  constructor() {}
+  // --- CONTROL DE TEMPORIZADORES (POLLING ASÍNCRONO) ---
+  private statusInterval: any = null;
+  private registrosInterval: any = null;
 
-  ngOnInit() {
-    this.refreshStreamUrl();
+  ngOnInit(): void {
     this.checkStatus();
-    this.startPolling();
+    this.cargarRegistrosRecientes();
+
+    // Polling ordenado: previene que se encallen las peticiones de red
+    this.statusInterval = setInterval(() => this.checkStatus(), 2000);
+    this.registrosInterval = setInterval(() => this.cargarRegistrosRecientes(), 1500);
   }
 
-  ngOnDestroy() {
-    if (this.pollInterval) clearInterval(this.pollInterval);
+  ngOnDestroy(): void {
+    if (this.statusInterval) clearInterval(this.statusInterval);
+    if (this.registrosInterval) clearInterval(this.registrosInterval);
   }
 
-  refreshStreamUrl() {
-    this.streamUrl = this.sanitizer.bypassSecurityTrustUrl(
-      `${this.baseStreamUrl}?t=${Date.now()}`
-    );
-  }
-
-  changeCameraSource() {
-    const source = this.cameraType === 'local' ? '0' : this.ipAddress;
-    this.cameraRunning = false;
-    this.cdr.detectChanges();
-
-    this.http.post(`${this.apiUrl}/camera/source`, { source }).subscribe({
-      next: () => {
-        setTimeout(() => {
-          this.cameraRunning = true;
-          this.refreshStreamUrl();
-          this.cdr.detectChanges();
-        }, 1200);
-      },
-      error: err => {
-        this.cameraRunning = true;
-        console.error('Error changing source:', err);
+  // =======================================================
+  // 🚀 FLUJO DE DATOS Y CONEXIÓN CON EL SERVIDOR PYTHON
+  // =======================================================
+  async checkStatus() {
+    this.http.get(`${this.privateApiUrl}/camera/status`).subscribe({
+      next: (res: any) => {
+        this.isCameraRunning = res.camera_running;
+        this.isDetectionRunning = res.detection_running;
         this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('[SENTINEL IA]: Error leyendo telemetría de estados:', err);
+      }
+    });
+
+    this.http.get(`${this.privateApiUrl}/camera/location`).subscribe({
+      next: (res: any) => {
+        this.lugarActual = res.lugar || 'Cámara Principal';
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('[SENTINEL IA]: Error leyendo metadatos de lugar:', err);
       }
     });
   }
 
-  checkStatus() {
-    this.http.get(`${this.apiUrl}/camera/status`).subscribe({
-      next: res => { this.detectionRunning = res.detection_running; this.cdr.detectChanges(); },
-      error: err => console.error('Status error:', err)
-    });
-    this.http.get(`${this.apiUrl}/camera/location`).subscribe({
-      next: res => { this.currentLocation = res.lugar; this.locationInput = res.lugar; this.cdr.detectChanges(); },
-      error: err => console.error('Location error:', err)
-    });
-  }
-
-  updateLocation() {
-    if (!this.locationInput.trim()) return;
-    this.http.post(`${this.apiUrl}/camera/location`, { lugar: this.locationInput }).subscribe({
-      next: res => { this.currentLocation = res.lugar; this.cdr.detectChanges(); },
-      error: err => console.error('Update location error:', err)
-    });
-  }
-
-  toggleDetection() {
-    this.detectionRunning = !this.detectionRunning;
-    this.http.post(`${this.apiUrl}/camera/toggle`, {}).subscribe({
-      next: res => { this.detectionRunning = res.detection_running; this.cdr.detectChanges(); },
-      error: err => { this.detectionRunning = !this.detectionRunning; console.error(err); this.cdr.detectChanges(); }
-    });
-  }
-
-  startPolling() {
-    this.fetchRecentRegistros();
-    this.pollInterval = setInterval(() => this.fetchRecentRegistros(), 3000);
-  }
-
-  fetchRecentRegistros() {
-    this.http.get(`${this.apiUrl}/registros/recent?limit=50`).subscribe({
-      next: data => {
-        this.recentRegistros = data;
-        this.totalPages = Math.ceil(data.length / this.itemsPerPage) || 1;
-        this.updatePaginatedData();
+  cargarRegistrosRecientes() {
+    this.http.get(`${this.privateApiUrl}/registros/recent?limit=50`).subscribe({
+      next: (res: any) => {
+        this.registrosRecientes = res || [];
+        // Actualizar total de páginas dinámicamente según volumen de transacciones
+        this.totalPages = Math.max(1, Math.ceil(this.registrosRecientes.length / this.itemsPerPage));
+        this.cdr.detectChanges();
       },
-      error: err => console.error('Fetch error:', err)
+      error: (err: any) => {
+        console.error('[SENTINEL IA]: Error de actualización de tablas:', err);
+      }
     });
   }
 
-  updatePaginatedData() {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    this.paginatedRegistros = this.recentRegistros.slice(start, start + this.itemsPerPage);
-    this.cdr.detectChanges();
+  // =======================================================
+  // 🚀 CONTROL INTERACTIVO DE ACCIONES DE LA PLANTILLA
+  // =======================================================
+ async toggleDetection() {
+    // 🚀 Determinamos explícitamente qué acción queremos ejecutar en el backend
+    // Si la IA está corriendo, le mandamos 'stop'. Si está apagada, le mandamos 'start'.
+    const accionDefinida = this.isDetectionRunning ? 'stop' : 'start';
+    console.log(`[CONTROL DASHBOARD]: Solicitando acción explícita: ${accionDefinida}`);
+
+    this.http.post(`${this.privateApiUrl}/camera/toggle`, { action: accionDefinida }).subscribe({
+      next: (res: any) => {
+        this.isCameraRunning = res.camera_running;
+        this.isDetectionRunning = res.detection_running;
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('[IA_CONTROL]: Error en switch de inferencia:', err);
+      }
+    });
   }
 
+  async updateLocation() {
+    if (!this.nuevoLugarInput || !this.nuevoLugarInput.trim()) return;
+    const lugarLimpio = this.nuevoLugarInput.trim();
+
+    this.http.post(`${this.privateApiUrl}/camera/location`, { lugar: lugarLimpio }).subscribe({
+      next: (res: any) => {
+        this.lugarActual = res.lugar;
+        this.nuevoLugarInput = ''; // Vacía el input tras registrar con éxito
+        this.checkStatus();
+        this.cargarRegistrosRecientes();
+      },
+      error: (err: any) => {
+        console.error('[IA_CONTROL]: Error propagando nueva locación en caliente:', err);
+      }
+    });
+  }
+
+  async changeCameraSource() {
+    // 🚀 DETERMINACIÓN DE FUENTE: Mapea si usas la cámara local (0) o el stream IP de DroidCam
+    const sourceValue = this.cameraType === 'local' ? '0' : this.ipAddress;
+    console.log(`[HARDWARE]: Solicitando enlace a recurso: ${sourceValue}`);
+
+    this.http.post(`${this.privateApiUrl}/camera/source`, { source: sourceValue }).subscribe({
+      next: (res: any) => {
+        // Al modificar la fuente, refrescamos estados de inmediato
+        this.checkStatus();
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('[HARDWARE_ERROR]: No se pudo conmutar la fuente de captura:', err);
+      }
+    });
+  }
+
+  // Controlador de cambio de página de tu tabla baja
   changePage(page: number) {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      this.updatePaginatedData();
+      this.cdr.detectChanges();
     }
   }
 }

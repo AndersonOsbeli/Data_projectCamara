@@ -3,11 +3,11 @@
   <div class="toast-card" [class]="'toast-card toast-' + toast.type" (click)="$event.stopPropagation()">
     <div class="toast-icon-wrap">
       @if (toast.type === 'success') {
-      <i class="bi bi-check-circle-fill"></i>
+        <i class="bi bi-check-circle-fill"></i>
       } @else if (toast.type === 'error') {
-      <i class="bi bi-x-circle-fill"></i>
+        <i class="bi bi-x-circle-fill"></i>
       } @else {
-      <i class="bi bi-info-circle-fill"></i>
+        <i class="bi bi-info-circle-fill"></i>
       }
     </div>
     <div class="toast-content">
@@ -22,8 +22,10 @@
 </div>
 }
 
-<section *ngIf="!mostrandoOTP" class="login-container">
+@if (!mostrandoOTP) {
+<section class="login-container">
   <div class="login-box">
+    
     <div class="logo-section">
       <div class="logo-icon">
         <i class="bi bi-camera-reels"></i>
@@ -53,13 +55,15 @@
         </div>
       </div>
 
-      <div class="form-group" *ngIf="isRegisterMode">
+      @if (isRegisterMode) {
+      <div class="form-group">
         <label for="confirmPassword">Confirmar contraseña</label>
         <div class="input-wrapper input-password">
           <i class="bi bi-lock-fill"></i>
           <input #confirmInput id="confirmPassword" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••">
         </div>
       </div>
+      }
 
       <button class="btn-signin" type="button" 
         (click)="onValidateCredentialsDirect(emailInput.value, passwordInput.value, isRegisterMode ? confirmInput.value : '')">
@@ -83,27 +87,54 @@
         </button>
         
         <button type="button" class="method-button faceid" (click)="onFaceIDAction(emailInput.value)">
-         <i class="bi bi-camera"></i>
-        {{ isRegisterMode ? 'Saber cómo enrolar rostro' : 'Iniciar con Face ID' }}
+          <i class="bi bi-camera"></i>
+          {{ isRegisterMode ? 'Saber cómo enrolar rostro' : 'Iniciar con Face ID' }}
         </button>
       </div>
 
-    </div> </div> <div class="faceid-preview" *ngIf="isFaceIDScanning">
-    <div class="camera-overlay">
-      <video #faceVideo autoplay playsinline muted class="face-video"></video>
-      <canvas #faceCanvas style="display: none;"></canvas>
-      <div class="scan-indicator">
-        <div class="scan-circle"></div>
-        <p>{{ isRegisterMode ? 'Enrolando datos biométricos...' : 'Analizando rasgos faciales...' }}</p>
+    </div> 
+  </div> 
+
+  @if (isFaceIDScanning) {
+  <div class="faceid-preview">
+    <div class="camera-overlay" style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px);">
+      
+      <div class="scanner-viewport" style="position: relative; width: 480px; height: 360px; border-radius: 12px; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); background: #000; border: 2px solid #334155;">
+        
+        @if (mostrarCamaraEnVivo) {
+          <video #faceVideo autoplay playsinline muted class="face-video" style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);"></video>
+          
+          <canvas #faceCanvas style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); pointer-events: none; z-index: 10;"></canvas>
+          
+          <div style="position: absolute; inset: 0; pointer-events: none; z-index: 20;">
+            <div class="target-box" style="position: absolute; top: 10%; left: 15%; width: 70%; height: 80%; border: 2px dashed rgba(0, 229, 255, 0.4); border-radius: 12px; box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.15);"></div>
+          </div>
+        }
+
       </div>
-      <button class="faceid-cancel" type="button" (click)="stopFaceIDScan()">
-        <i class="bi bi-x-lg"></i> Cancelar
-      </button>
+
+      <div class="scan-indicator" style="margin-top: 20px; text-align: center;">
+        @if (mostrarCamaraEnVivo) {
+          <p style="color: #00e5ff; font-family: 'Courier New', monospace; font-size: 14px; margin: 10px 0; letter-spacing: 1px; font-weight: bold; filter: drop-shadow(0 0 5px #00e5ff);">🧬 RECONOCIENDO MATRIZ DE PUNTOS...</p>
+        } @else {
+          <p style="color: #10b981; font-family: 'Courier New', monospace; font-weight: bold; letter-spacing: 2px; margin: 0; font-size: 16px;">✓ ACCESO CONCEDIDO</p>
+        }
+      </div>
+      
+      @if (mostrarCamaraEnVivo) {
+        <button class="faceid-cancel" type="button" (click)="stopFaceIDScan()" style="position: absolute; top: 20px; right: 20px; background: rgba(239, 68, 68, 0.9); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+          Cancelar
+        </button>
+      }
     </div>
   </div>
-</section>
+  }
 
-<section *ngIf="mostrandoOTP" class="otp-container">
+</section>
+}
+
+@if (mostrandoOTP) {
+<section class="otp-container">
   <div class="otp-box">
     <div class="otp-header">
       <div class="logo-icon">
@@ -130,3 +161,4 @@
     <p class="btn-back" (click)="onCancel()">← Volver al Login</p>
   </div>
 </section>
+}

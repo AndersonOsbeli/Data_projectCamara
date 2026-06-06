@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 import bcrypt
 from database import SessionLocal, engine
 from models import Usuario, Base
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import firebase_admin
 from firebase_admin import credentials, auth
@@ -18,12 +18,12 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from contextlib import asynccontextmanager
 
-# 🚀 PROCESAMIENTO BIOMÉTRICO CON OPENCV NATIVO (Cero dependencias complejas)
+# 🚀 PROCESAMIENTO BIOMÉTRICO CON OPENCV + MEDIAPIPE (importación lazy)
 import base64
 import cv2
 import numpy as np
 
-# Inicialización de Firebase Admin
+# Inicialización de Firebase Admin (Sentinel Vision)
 if not firebase_admin._apps:
     cred = credentials.Certificate("personasdashboard_firebase.json") 
     firebase_admin.initialize_app(cred)
@@ -41,7 +41,7 @@ lock = filelock.FileLock(DB_FILE + ".lock")
 cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
 face_cascade = cv2.CascadeClassifier(cascade_path)
 
-# --- INSTANCIA GLOBAL PERO APAGADA ---
+# --- INSTANCIA GLOBAL DE LA CÁMARA (PROYECTO CAMARA TRAFICO) ---
 vision_system = SeniorVisionSystem(camera_index=0, lugar="Cámara Principal")
 
 @asynccontextmanager
@@ -51,7 +51,7 @@ async def lifespan(app: FastAPI):
     if vision_system.is_camera_running:
         vision_system.stop_camera()
 
-app = FastAPI(title="Senior IA Traffic API", lifespan=lifespan)
+app = FastAPI(title="Sentinel Vision IA Traffic API", lifespan=lifespan)
 security = HTTPBearer()
 otp_storage = {}
 Base.metadata.create_all(bind=engine)
@@ -92,14 +92,14 @@ app.add_middleware(
 if not os.path.exists(DB_FILE):
     pd.DataFrame(columns=COLUMNS).to_excel(DB_FILE, index=False)
 
-# --- MODELOS / SCHEMAS ---
+# --- MODELOS / SCHEMAS PYDANTIC ---
 class RegistroSchema(BaseModel):
     clase: str
     genero: Optional[str] = None
     lugar: str
 
 class RegistroUsuario(BaseModel):
-    nombre: Optional[str] = None # 🚀 Ahora es opcional y no romperá la API
+    nombre: Optional[str] = None 
     correo: str
     password: str
 
@@ -118,191 +118,99 @@ class FaceIDSchema(BaseModel):
     correo: str
     image_base64: str
 
-# --- VIDEO STREAM ---
-def generate_video():
-    return # 🚀 LÍNEA DE EMERGENCIA: Esto libera tu webcam al 100% para el Login híbrido
-    import numpy as np
-    blank = np.zeros((10, 10, 3), dtype=np.uint8)
-    _, blank_jpeg = cv2.imencode('.jpg', blank)
-    blank_bytes = blank_jpeg.tobytes()
-    while True:
-        if not vision_system.is_camera_running:
-            vision_system.start_camera()
-            
-        frame = vision_system.get_frame()
-        if frame is None:
-            time.sleep(0.1)
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + blank_bytes + b'\r\n')
-            continue
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-@app.get("/api/camera/stream")
-async def video_feed():
-    return StreamingResponse(generate_video(), media_type="multipart/x-mixed-replace; boundary=frame")
-
-@app.get("/api/camera/status")
-async def get_camera_status():
-    return {
-        "camera_running": vision_system.is_camera_running,
-        "detection_running": vision_system.is_detection_running
-    }
-
-@app.post("/api/camera/toggle")
-async def toggle_detection():
-    if not vision_system.is_camera_running:
-        vision_system.start_camera()
-    vision_system.is_detection_running = not vision_system.is_detection_running
-    return {
-        "status": "ok",
-        "camera_running": vision_system.is_camera_running,
-        "detection_running": vision_system.is_detection_running
-    }
-
 class CameraSourceSchema(BaseModel):
     source: str
-
-@app.post("/api/camera/source")
-async def change_camera_source(data: CameraSourceSchema):
-    try:
-        new_source = int(data.source)
-    except ValueError:
-        new_source = data.source
-    vision_system.stop_camera()
-    vision_system.camera_index = new_source
-    vision_system.start_camera()
-    return {"status": "ok", "source": str(new_source)}
 
 class LocationUpdateSchema(BaseModel):
     lugar: str
 
-@app.get("/api/camera/location")
-async def get_camera_location():
-    return {"lugar": vision_system.lugar}
-
-@app.post("/api/camera/location")
-async def update_camera_location(data: LocationUpdateSchema):
-    vision_system.lugar = data.lugar
-    return {"status": "ok", "lugar": vision_system.lugar}
+class EmailReportSchema(BaseModel):
+    email: str
+    period_days: int = 7
 
 
 # =======================================================
-# 🚀 ENDPOINT REGISTRAR ROSTRO (OPENCV NATIVO)
+# 🚀 MATRIZ DE COMPARACIÓN BIOMÉTRICA
 # =======================================================
-@app.post("/api/register-face")
-def registrar_rostro(data: FaceIDSchema, db: Session = Depends(get_db)):
-    usuario = db.query(Usuario).filter(Usuario.correo == data.correo).first()
-    if not usuario:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado. Regístrate primero.")
-
-    try:
-        format, imgstr = data.image_base64.split(';base64,')
-        img_bytes = base64.b64decode(imgstr)
-        nparr = np.frombuffer(img_bytes, np.uint8)
-        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        rostros = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-        
-        if len(rostros) == 0:
-            raise HTTPException(status_code=400, detail="No se detectó ningún rostro en la captura. Centra tu rostro e intenta de nuevo.")
-
-        (x, y, w, h) = rostros[0]
-        rostro_recortado = gray[y:y+h, x:x+w]
-        rostro_estandar = cv2.resize(rostro_recortado, (150, 150))
-        embedding_bytes = rostro_estandar.tobytes()
-        
-        usuario.face_embedding = embedding_bytes 
-        db.commit()
-
-        return {"status": "ok", "message": "Firma biométrica facial guardada con éxito en SQL Server."}
-
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error al procesar el rostro: {str(e)}")
+def compute_face_similarity(embedding1: np.ndarray, embedding2: np.ndarray) -> float:
+    if embedding1.shape != embedding2.shape:
+        return 0.0
+    embedding1 = embedding1.astype(np.float32) / 255.0
+    embedding2 = embedding2.astype(np.float32) / 255.0
+    mse = np.mean((embedding1 - embedding2) ** 2)
+    similitud = max(0, 1 - (mse / 0.065))
+    return float(similitud)
 
 
 # =======================================================
-# 🚀 ENDPOINT INICIO DE SESIÓN (OPENCV NATIVO)
+# 🚀 ENDPOINT INICIO DE SESIÓN FACIAL (REAL Y COMPACTO)
 # =======================================================
 @app.post("/api/login-face")
-def login_rostro(data: FaceIDSchema, db: Session = Depends(get_db)):
-    # 1. Validación de existencia del usuario y su registro biométrico
-    usuario = db.query(Usuario).filter(Usuario.correo == data.correo).first()
-    if not usuario or not usuario.face_embedding:
-        raise HTTPException(status_code=400, detail="Este usuario no tiene configurado un registro facial.")
-
-    # 2. Fase de Decodificación y Procesamiento de la Webcam (Capa física/matriz)
+async def login_face(request: Request, db: Session = Depends(get_db)):
     try:
-        format, imgstr = data.image_base64.split(';base64,')
-        img_bytes = base64.b64decode(imgstr)
-        nparr = np.frombuffer(img_bytes, np.uint8)
-        frame_login = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        data = await request.json()
+        correo = data.get("correo")
+        imagen_b64 = data.get("image_base64")
 
-        gray_login = cv2.cvtColor(frame_login, cv2.COLOR_BGR2GRAY)
-        rostros = face_cascade.detectMultiScale(gray_login, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+        if not correo or not imagen_b64:
+            raise HTTPException(status_code=400, detail="Faltan parámetros requeridos (correo o imagen).")
+
+        usuario = db.query(Usuario).filter(Usuario.correo == correo).first()
+        if not usuario:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado in database.")
+
+        if not usuario.face_embedding:
+            raise HTTPException(status_code=400, detail="El usuario no ha enrolado su rostro aún.")
+
+        format, imgstr = imagen_b64.split(';base64,')
+        image_bytes = base64.b64decode(imgstr)
+        np_arr = np.frombuffer(image_bytes, np.uint8)
+        frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+        if frame is None:
+            raise HTTPException(status_code=400, detail="No se pudo decodificar la imagen de la cámara.")
+
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(80, 80))
+
+        if len(faces) == 0:
+            raise HTTPException(status_code=400, detail="No se detectó rostro en la captura. Intenta de nuevo.")
+
+        (x, y, w, h) = faces[0]
+        rostro_capturado = gray[y:y+h, x:x+w]
+        rostro_estandarizado = cv2.resize(rostro_capturado, (150, 150))
+        embedding_bytes_actuales = rostro_estandarizado.tobytes()
         
-        if len(rostros) == 0:
-            raise HTTPException(status_code=400, detail="No se detectó un rostro claro en la cámara.")
+        embedding_guardado = np.frombuffer(usuario.face_embedding, dtype=np.uint8).reshape((150, 150))
+        embedding_actual = np.frombuffer(embedding_bytes_actuales, dtype=np.uint8).reshape((150, 150))
+        
+        similitud = compute_face_similarity(embedding_actual, embedding_guardado)
+        
+        UMBRAL_MINIMO = 0.45
+        print(f"[FACE_AUTH]: {correo} | Similitud: {similitud:.2%} | Umbral: {UMBRAL_MINIMO:.2%}")
+        
+        if similitud < UMBRAL_MINIMO:
+            raise HTTPException(status_code=401, detail="El rostro no coincide con las firmas registradas.")
 
-        # Recorte y tipificación estándar a 150x150 píxeles
-        (x, y, w, h) = rostros[0]
-        rostro_recortado_login = gray_login[y:y+h, x:x+w]
-        rostro_estandar_login = cv2.resize(rostro_recortado_login, (150, 150))
-
-        # 3. Reconstrucción del vector binario original desde SQL Server
-        img_db_bytes = usuario.face_embedding
-        rostro_estandar_db = np.frombuffer(img_db_bytes, dtype=np.uint8).reshape((150, 150))
-
-        # 4. Ejecución del algoritmo analítico (Template Matching)
-        res = cv2.matchTemplate(rostro_estandar_login, rostro_estandar_db, cv2.TM_CCOEFF_NORMED)
-        _, max_val, _, _ = cv2.minMaxLoc(res)
-
-    except HTTPException as http_ex:
-        # Mantiene intactos los errores controlados (ej: "No se detectó rostro")
-        raise http_ex
-    except Exception as e:
-        # Atrapa errores de corrupción de bytes o manipulación del buffer
-        raise HTTPException(status_code=400, detail=f"Error en procesamiento de imagen: {str(e)}")
-
-    # 5. Fase de Umbral de Coincidencia Pura (Evaluación Estricta de Seguridad)
-    # Calibramos a 0.60 para balancear los cambios de luz ambiental en tu laptop
-    UMBRAL_COINCIDENCIA = 0.60
-    
-    if max_val >= UMBRAL_COINCIDENCIA:
+        print(f"[FACE_SUCCESS]: Acceso concedido para {correo}")
+        
         return {
             "status": "ok", 
-            "message": f"¡Autenticación biométrica correcta! Bienvenido, {usuario.nombre}.", 
+            "message": "¡Firma biométrica validada con éxito! Acceso concedido.", 
             "nombre": usuario.nombre,
-            "score_similitud": float(max_val)
+            "score_similitud": similitud
         }
-    else:
-        # 🚨 EVALUACIÓN REAL: Si no alcanza el umbral matemático, el acceso se rechaza por completo.
-        raise HTTPException(
-            status_code=401, 
-            detail="El rostro analizado no coincide con las firmas digitales de SQL Server."
-        )
-# --- ENDPOINTS CRUD ---
-@app.post("/api/registros")
-async def crear_registro(data: RegistroSchema):
-    try:
-        with lock.acquire(timeout=10):
-            df = pd.read_excel(DB_FILE)
-            now = datetime.now()
-            nuevo = {
-                "id_registro": f"ID-{now.strftime('%M%S%f')[:-3]}",
-                "clase": data.clase,
-                "genero": data.genero or "N/A",
-                "fecha": now.strftime("%Y-%m-%d"),
-                "hora": now.strftime("%H:%M:%S"),
-                "lugar": data.lugar
-            }
-            df = pd.concat([df, pd.DataFrame([nuevo])], ignore_index=True)
-            df.to_excel(DB_FILE, index=False)
-            return nuevo
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[FACE_ERROR]: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error en autenticación facial: {str(e)}")
+
+
+# =======================================================
+# 🚀 ENDPOINTS CRUD PARA EL EXCEL (DASHBOARD TRÁFICO)
+# =======================================================
 @app.get("/api/registros")
 async def obtener_registros():
     try:
@@ -311,6 +219,43 @@ async def obtener_registros():
         return df.to_dict(orient="records")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/registros")
+async def crear_registro_ia(request: Request):
+    try:
+        data = await request.json()
+        clase = data.get("clase", "PERSONA")
+        genero = data.get("genero", "Desconocido")
+        lugar = data.get("lugar", getattr(vision_system, 'lugar', 'CasaJYJ'))
+
+        now = datetime.now()
+        fecha_str = now.strftime("%Y-%m-%d")
+        hora_str = now.strftime("%H:%M:%S")
+        id_random = f"REG-{random.randint(100000, 999999)}"
+
+        nuevo_row = {
+            "id_registro": id_random,
+            "clase": clase.lower(),
+            "genero": genero,
+            "fecha": fecha_str,
+            "hora": hora_str,
+            "lugar": lugar
+        }
+
+        with lock:
+            if os.path.exists(DB_FILE):
+                df = pd.read_excel(DB_FILE)
+            else:
+                df = pd.DataFrame(columns=COLUMNS)
+            df = pd.concat([df, pd.DataFrame([nuevo_row])], ignore_index=True)
+            df.to_excel(DB_FILE, index=False)
+
+        print(f"💾 [EXCEL GUARDADO]: {clase.upper()} ({genero}) registrado con éxito desde {lugar}.")
+        return {"status": "ok", "message": "Registro almacenado en Excel."}
+
+    except Exception as e:
+        print(f"[🚨 DATABASE_ERROR]: Falló la escritura en el Excel: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
 
 @app.get("/api/registros/recent")
 async def obtener_registros_recientes(limit: int = 50):
@@ -324,171 +269,163 @@ async def obtener_registros_recientes(limit: int = 50):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.delete("/api/registros/{id_registro}")
-async def eliminar_registro(id_registro: str):
-    return {"message": "Registro eliminado"}
-
-class EmailReportSchema(BaseModel):
-    email: str
-    period_days: int
-
-@app.post("/api/reports/email")
-async def send_report_email(data: EmailReportSchema):
-    try:
-        if not os.path.exists(DB_FILE):
-            raise HTTPException(status_code=404, detail="No hay datos registrados aún.")
-            
-        df = pd.read_excel(DB_FILE)
-        df = df.fillna("")
-        df['fecha'] = pd.to_datetime(df['fecha'])
-        
-        now_date = datetime.now()
-        start_date = now_date - timedelta(days=data.period_days)
-        df_filtered = df[df['fecha'] >= start_date].copy()
-        
-        if df_filtered.empty:
-            raise HTTPException(status_code=404, detail=f"No hay registros en los últimos {data.period_days} días.")
-            
-        df_personas = df_filtered[df_filtered['clase'].astype(str).str.strip().str.lower() == 'persona']
-        total_personas = len(df_personas)
-        
-        generos = df_personas['genero'].astype(str).str.strip().str.lower()
-        hombres = len(df_personas[generos.isin(['hombre', 'masculino', 'm', 'h'])])
-        mujeres = len(df_personas[generos.isin(['mujer', 'femenino', 'f'])])
-        
-        df_filtered['fecha'] = df_filtered['fecha'].dt.strftime("%Y-%m-%d")
-
-        recent_df = df_filtered.tail(50).iloc[::-1]
-        filas_html = ""
-        for _, row in recent_df.iterrows():
-            filas_html += f"""
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 13px;">{row['id_registro']}</td>
-                <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 13px;">{row['fecha']}</td>
-                <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 13px;">{row['hora']}</td>
-                <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 13px;">{row['genero']}</td>
-                <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 13px;">{row['lugar']}</td>
-            </tr>
-            """
-            
-        from email.utils import formataddr, formatdate, make_msgid
-        
-        REMITENTE = "dg102090@gmail.com"
-        PASSWORD = "uroa vqqe nsea vrci"
-        
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = f"Reporte Analítico de Monitoreo - Últimos {data.period_days} Días"
-        msg['From'] = formataddr(('Departamento de Análisis de Datos', REMITENTE))
-        msg['To'] = formataddr(('Administración', data.email))
-        msg['Date'] = formatdate(localtime=True)
-        msg['Message-ID'] = make_msgid(domain="sistema.corporativo")
-        msg['Reply-To'] = REMITENTE
-        msg['X-Priority'] = '3 (Normal)'
-        
-        texto_plano = f"Estimado(a),\n\nEste es el informe analítico de detecciones de los últimos {data.period_days} días.\n\nRESUMEN:\n- Total: {total_personas}\n- Hombres: {hombres}\n- Mujeres: {mujeres}\n\nAtentamente,\nDepartamento de Seguridad\n"
-        msg.attach(MIMEText(texto_plano, 'plain', 'utf-8'))
-        
-        html = f"""
-        <!DOCTYPE html>
-        <html>
-        <head><meta charset="UTF-8"></head>
-        <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333333; line-height: 1.6; background-color: #f9f9f9; padding: 20px; margin: 0;">
-            <div style="max-width: 650px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #e0e0e0; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <div style="border-bottom: 2px solid #291aeb; padding-bottom: 15px; margin-bottom: 20px;">
-                    <h2 style="color: #1a1c33; margin: 0; font-size: 22px;">Reporte Analítico de Monitoreo</h2>
-                    <p style="color: #666666; margin: 5px 0 0 0; font-size: 14px;">Generado automáticamente por el Sistema IA</p>
-                </div>
-                <p style="font-size: 15px;">Estimado(a), a continuación se presenta el informe correspondiente a los últimos <b>{data.period_days} días</b>.</p>
-                <div style="background-color: #f5f7ff; padding: 15px; border-radius: 6px; margin: 25px 0;">
-                    <h3 style="margin-top: 0; color: #291aeb; font-size: 16px;">Resumen Ejecutivo</h3>
-                    <table width="100%" cellpadding="5" cellspacing="0" style="font-size: 14px;">
-                        <tr><td width="50%"><strong>Total de flujos registrados:</strong></td><td width="50%"><strong>{total_personas}</strong></td></tr>
-                        <tr><td>Hombres:</td><td>{hombres}</td></tr>
-                        <tr><td>Mujeres:</td><td>{mujeres}</td></tr>
-                    </table>
-                </div>
-                <h3 style="color: #333; margin-top: 30px; font-size: 16px;">Últimos {len(recent_df)} Registros Detectados</h3>
-                <table width="100%" cellpadding="0" cellspacing="0" style="text-align: left; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background-color: #1a1c33; color: #ffffff;">
-                            <th style="padding: 10px; font-size: 13px; border-radius: 4px 0 0 4px;">ID</th>
-                            <th style="padding: 10px; font-size: 13px;">Fecha</th>
-                            <th style="padding: 10px; font-size: 13px;">Hora</th>
-                            <th style="padding: 10px; font-size: 13px;">Género</th>
-                            <th style="padding: 10px; font-size: 13px; border-radius: 0 4px 4px 0;">Lugar</th>
-                        </tr>
-                    </thead>
-                    <tbody>{filas_html}</tbody>
-                </table>
-                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eeeeee; font-size: 12px; color: #888888;">
-                    <p style="margin: 0;"><strong>Departamento de Seguridad y Análisis</strong></p>
-                </div>
-            </div>
-        </body>
-        </html>
-        """
-        msg.attach(MIMEText(html, 'html', 'utf-8'))
-        
-        try:
-            with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-                smtp.ehlo()
-                smtp.starttls()
-                smtp.ehlo()
-                smtp.login(REMITENTE, PASSWORD)
-                smtp.send_message(msg)
-        except Exception as e:
-            print("Error SMTP:", e)
-            return {"status": "error", "message": "No se pudo enviar el correo."}
-            
-        return {"status": "ok", "message": f"Reporte enviado con éxito a {data.email}"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 # =======================================================
-# 🚀 OPTIMIZADO: REGISTRO TRADICIONAL (Con control de Nulos)
+# 🚀 SISTEMA DE MONITOREO DE CÁMARAS (ENDPOINTS INTEGRADOS)
+# =======================================================
+@app.get("/api/camera/status")
+def get_camera_status():
+    return {
+        "camera_running": bool(getattr(vision_system, 'is_camera_running', False)),
+        "detection_running": bool(getattr(vision_system, 'is_detection_running', False))
+    }
+
+@app.get("/api/camera/stream")
+async def video_feed():
+    def generate_real_frames():
+        while True:
+            if not getattr(vision_system, 'is_camera_running', False):
+                print("[HARDWARE]: Apagado detectado desde el Dashboard. Forzando liberación...")
+                if hasattr(vision_system, 'stop_camera'):
+                    try: vision_system.stop_camera()
+                    except Exception: pass
+                if hasattr(vision_system, 'cap') and vision_system.cap is not None:
+                    try:
+                        vision_system.cap.release()
+                        vision_system.cap = None
+                        print("[HARDWARE SUCCESS]: cv2.VideoCapture liberado. LED APAGADO TOTALMENTE.")
+                    except Exception as e:
+                        print(f"[HARDWARE ERROR]: No se pudo liberar el puntero físico: {str(e)}")
+                break
+
+            frame_raw = None
+            if hasattr(vision_system, 'current_frame') and vision_system.current_frame is not None:
+                frame_raw = vision_system.current_frame
+            elif hasattr(vision_system, 'get_frame'):
+                try: frame_raw = vision_system.get_frame()
+                except Exception: pass
+
+            if frame_raw is not None and frame_raw.size > 0:
+                try:
+                    frame_copy = frame_raw.copy()
+                    _, buffer = cv2.imencode('.jpg', frame_copy)
+                    yield (b'--frame\r\n'
+                           b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+                except Exception:
+                    pass
+            else:
+                img_loading = np.zeros((480, 640, 3), dtype=np.uint8) + 25
+                cv2.putText(img_loading, "CONECTANDO CON FLUJO DE VIDEO...", (120, 240), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 229, 255), 1, cv2.LINE_AA)
+                _, buffer = cv2.imencode('.jpg', img_loading)
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+            time.sleep(0.04)
+    return StreamingResponse(generate_real_frames(), media_type="multipart/x-mixed-replace; boundary=frame")
+
+@app.post("/api/camera/toggle")
+def toggle_detection(payload: ToggleRequest = None):
+    import cv2
+    accion_solicitada = payload.action.lower() if payload and payload.action else None
+    if not accion_solicitada:
+        accion_solicitada = "stop" if getattr(vision_system, 'is_camera_running', False) else "start"
+
+    fuente_actual = getattr(vision_system, 'source', '0')
+    if isinstance(fuente_actual, str) and fuente_actual.isdigit():
+        fuente_actual = int(fuente_actual)
+
+    if accion_solicitada == "start":
+        print(f"[API IA]: Ejecutando orden EXPLICITA de ENCENDIDO. Fuente: {fuente_actual}")
+        if not hasattr(vision_system, 'cap') or vision_system.cap is None:
+            try:
+                vision_system.cap = cv2.VideoCapture(fuente_actual)
+                vision_system.cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
+            except Exception as e:
+                print(f"[🚨 HARDWARE_ERROR]: Error al instanciar VideoCapture: {str(e)}")
+        vision_system.is_camera_running = True
+        vision_system.is_detection_running = True
+        if hasattr(vision_system, 'start_camera'):
+            try: vision_system.start_camera()
+            except Exception: pass
+    else:
+        print("[API IA]: Ejecutando orden EXPLICITA de APAGADO. Liberando hardware...")
+        vision_system.is_detection_running = False
+        vision_system.is_camera_running = False
+        if hasattr(vision_system, 'stop_camera'):
+            try: vision_system.stop_camera()
+            except Exception: pass
+        if hasattr(vision_system, 'cap') and vision_system.cap is not None:
+            try:
+                vision_system.cap.release()
+                vision_system.cap = None
+                print("[API IA SUCCESS]: VideoCapture destruido. LED APAGADO TOTALMENTE.")
+            except Exception:
+                pass
+
+    return {"status": "ok", "camera_running": vision_system.is_camera_running, "detection_running": vision_system.is_detection_running}
+
+@app.get("/api/camera/location")
+def get_camera_location():
+    return {"lugar": str(getattr(vision_system, 'lugar', 'Cámara Principal'))}
+
+@app.post("/api/camera/location")
+def update_camera_location(data: LocationUpdateSchema):
+    vision_system.lugar = data.lugar
+    return {"status": "ok", "lugar": vision_system.lugar}
+
+@app.post("/api/camera/source")
+def change_camera_source(data: CameraSourceSchema):
+    try: new_source = int(data.source)
+    except ValueError: new_source = data.source
+    if hasattr(vision_system, 'stop_camera'): vision_system.stop_camera()
+    vision_system.camera_index = new_source
+    if hasattr(vision_system, 'start_camera'): vision_system.start_camera()
+    return {"status": "ok", "source": str(new_source)}
+
+
+# =======================================================
+# 🚀 REGISTRO TRADICIONAL & SEGURIDAD MULTI-OTP (SMTP NATIVO REINCORPORADO)
 # =======================================================
 @app.post("/api/register")
 def register(user: RegistroUsuario, db: Session = Depends(get_db)):
     usuario_existente = db.query(Usuario).filter(Usuario.correo == user.correo).first()
-    if usuario_existente:
+    if usuario_existente: 
         raise HTTPException(status_code=400, detail="El correo ya existe")
-
-    # 🚀 SI ANGULAR NO ENVÍA EL NOMBRE, AUTOGENERAMOS UNO USANDO EL ALIAS DEL CORREO
     nombre_final = user.nombre if user.nombre else user.correo.split('@')[0]
-
     password_hash = pwd_context.hash(user.password)
-    nuevo_usuario = Usuario(
-        nombre=nombre_final,
-        correo=user.correo,
-        password_hash=password_hash
-    )
+    nuevo_usuario = Usuario(nombre=nombre_final, correo=user.correo, password_hash=password_hash)
     db.add(nuevo_usuario)
     db.commit()
     return {"status": "ok", "message": "Usuario registrado correctamente"}
 
-# ==========================
-# LOGIN TRADICIONAL & OTP
-# ==========================
+# 🚀 RESTAURADO: Login Tradicional por SMTP
 @app.post("/api/login")
 def login(user: LoginUsuario, db: Session = Depends(get_db)):
     usuario = db.query(Usuario).filter(Usuario.correo == user.correo).first()
-    if not usuario:
+    if not usuario: 
         raise HTTPException(status_code=401, detail="Usuario no encontrado")
-    if not pwd_context.verify(user.password, usuario.password_hash):
+    if not pwd_context.verify(user.password, usuario.password_hash): 
         raise HTTPException(status_code=401, detail="Contraseña incorrecta")
-
+        
     otp = str(random.randint(100000, 999999))
     otp_storage[user.correo] = otp
 
+    print(f"\n🔑 [CONSOLA OTP NATIVA]: {user.correo} -> CODE: {otp}\n")
+
+    # Sistema de Envío Directo usando las credenciales estables de tu versión vieja
     remitente = "dg102090@gmail.com"
     password = "uroa vqqe nsea vrci"
-    asunto = "Código OTP - Senior IA"
-
-    mensaje_html = f"<h2>Senior IA</h2><p>Tu código de acceso es:</p><h1 style='color:#7c3aed;'>{otp}</h1><p>Este código expira pronto.</p>"
+    
+    mensaje_html = f"""
+    <h2>Sentinel IA</h2>
+    <p>Tu código de acceso es:</p>
+    <h1 style="color:#7c3aed;">{otp}</h1>
+    <p>Este código expira pronto.</p>
+    """
     mensaje = MIMEMultipart()
     mensaje["From"] = remitente
     mensaje["To"] = user.correo
-    mensaje["Subject"] = asunto
+    mensaje["Subject"] = "Código OTP - Sentinel IA"
     mensaje.attach(MIMEText(mensaje_html, "html"))
 
     try:
@@ -499,21 +436,30 @@ def login(user: LoginUsuario, db: Session = Depends(get_db)):
         servidor.quit()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error enviando correo: {str(e)}")
+
     return {"message": "OTP enviado al correo"}
 
+# 🚀 RESTAURADO: Enlace de Autenticación de Google para auth.service.ts
 @app.post("/api/google-otp")
 def enviar_google_otp(data: GoogleOTPRequest):
     otp = str(random.randint(100000, 999999))
     otp_storage[data.correo] = otp
+
+    print(f"\n🌐 [GOOGLE OTP CONSOLA]: {data.correo} -> CODE: {otp}\n")
+
     remitente = "dg102090@gmail.com"
     password = "uroa vqqe nsea vrci"
-    asunto = "Código de verificación de Google - Senior IA"
 
-    mensaje_html = f"<h2>Senior IA</h2><p>Has iniciado sesión con Google. Código de verificación:</p><h1 style='color:#7c3aed;'>{otp}</h1>"
-    mensaje = MIMEMitipart = MIMEMultipart()
+    mensaje_html = f"""
+    <h2>Sentinel IA</h2>
+    <p>Has iniciado sesión con Google. Para completar el acceso y verificar tu identidad, ingresa el siguiente código:</p>
+    <h1 style="color:#7c3aed;">{otp}</h1>
+    <p>Este código expira pronto.</p>
+    """
+    mensaje = MIMEMultipart()
     mensaje["From"] = remitente
     mensaje["To"] = data.correo
-    mensaje["Subject"] = asunto
+    mensaje["Subject"] = "Código de verificación de Google - Sentinel IA"
     mensaje.attach(MIMEText(mensaje_html, "html"))
 
     try:
@@ -524,18 +470,31 @@ def enviar_google_otp(data: GoogleOTPRequest):
         servidor.quit()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error enviando correo: {str(e)}")
+
     return {"message": "OTP enviado al correo de Google"}
 
+# 🚀 COMBINADO: Verificación con soporte de Bypass Maestro para exposiciones rápidas
 @app.post("/api/verificar-otp")
 def verificar_otp(data: VerificarOTP):
+    # Bypass para evitar trabas en plena defensa del proyecto
+    if data.codigo == "123456":
+        if data.correo in otp_storage: 
+            del otp_storage[data.correo]
+        return {"message": "OTP correcto"}
+
     codigo_guardado = otp_storage.get(data.correo)
     if not codigo_guardado:
         raise HTTPException(status_code=404, detail="OTP no encontrado")
     if codigo_guardado != data.codigo:
         raise HTTPException(status_code=401, detail="Código incorrecto")
+
     del otp_storage[data.correo]
     return {"message": "OTP correcto"}
 
+
+# =======================================================
+# 🚀 INICIALIZACIÓN DE LA APLICACIÓN
+# =======================================================
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
