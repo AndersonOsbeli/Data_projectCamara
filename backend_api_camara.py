@@ -124,6 +124,9 @@ class CameraSourceSchema(BaseModel):
 class LocationUpdateSchema(BaseModel):
     lugar: str
 
+class ToggleRequest(BaseModel):
+    action: Optional[str] = None
+
 class EmailReportSchema(BaseModel):
     email: str
     period_days: int = 7
@@ -186,7 +189,7 @@ async def login_face(request: Request, db: Session = Depends(get_db)):
         
         similitud = compute_face_similarity(embedding_actual, embedding_guardado)
         
-        UMBRAL_MINIMO = 0.45
+        UMBRAL_MINIMO = 0.43
         print(f"[FACE_AUTH]: {correo} | Similitud: {similitud:.2%} | Umbral: {UMBRAL_MINIMO:.2%}")
         
         if similitud < UMBRAL_MINIMO:
@@ -363,6 +366,70 @@ def toggle_detection(payload: ToggleRequest = None):
                 pass
 
     return {"status": "ok", "camera_running": vision_system.is_camera_running, "detection_running": vision_system.is_detection_running}
+
+@app.post("/api/camera/start")
+def start_camera_auto():
+    """🚀 ACTIVA LA CÁMARA AUTOMÁTICAMENTE AL ABRIR EL MÓDULO"""
+    print("[CAMERA]: Activando cámara automáticamente...")
+    
+    # Obtener fuente actual (puede ser índice de cámara o URL de IP)
+    fuente_actual = getattr(vision_system, 'camera_index', 0)
+    print(f"[CAMERA]: Usando fuente: {fuente_actual}")
+    
+    # IMPORTANTE: No crear cv2.VideoCapture aquí. El método start_camera() 
+    # ya se encarga de abrir la cámara en un thread separado.
+    if hasattr(vision_system, 'start_camera'):
+        try: 
+            vision_system.start_camera()
+            print("[CAMERA]: Thread de captura iniciado correctamente")
+        except Exception as e:
+            print(f"[ERROR]: No se pudo iniciar thread de cámara: {str(e)}")
+            return {"status": "error", "camera_running": False}
+    
+    return {"status": "ok", "camera_running": vision_system.is_camera_running}
+
+@app.post("/api/camera/prepare-gender-detection")
+def prepare_gender_detection(data: LocationUpdateSchema):
+    """🚀 PREPARA LA DETECCIÓN DE GÉNERO PARA UNA UBICACIÓN"""
+    print(f"[DETECTION]: Preparando detección de género para ubicación: {data.lugar}")
+    vision_system.lugar = data.lugar
+    # La detección de género estará lista pero inactiva hasta que el usuario haga clic
+    vision_system.is_detection_running = False
+    return {"status": "ok", "lugar": data.lugar, "ready_for_gender_detection": True}
+
+@app.post("/api/camera/toggle-gender")
+def toggle_gender_detection(payload: ToggleRequest):
+    """🚀 ACTIVA/DESACTIVA SOLO LA DETECCIÓN DE GÉNERO (SIN AFECTAR LA CÁMARA)"""
+    accion = payload.action.lower() if payload.action else "start-gender"
+    
+    if accion == "start-gender":
+        print("[DETECTION]: INICIANDO detección de género...")
+        vision_system.is_detection_running = True
+    elif accion == "stop-gender":
+        print("[DETECTION]: DETENIENDO detección de género...")
+        vision_system.is_detection_running = False
+    
+    return {
+        "status": "ok", 
+        "camera_running": vision_system.is_camera_running, 
+        "detection_running": vision_system.is_detection_running
+    }
+
+@app.post("/api/camera/stop")
+def stop_camera_manual():
+    """🚀 DESACTIVA LA CÁMARA MANUALMENTE"""
+    print("[CAMERA]: Deteniendo cámara manualmente...")
+    vision_system.is_detection_running = False
+    vision_system.is_camera_running = False
+    
+    if hasattr(vision_system, 'stop_camera'):
+        try: 
+            vision_system.stop_camera()
+            print("[CAMERA]: Cámara detenida exitosamente")
+        except Exception as e:
+            print(f"[CAMERA ERROR]: {str(e)}")
+    
+    return {"status": "ok", "camera_running": False}
 
 @app.get("/api/camera/location")
 def get_camera_location():

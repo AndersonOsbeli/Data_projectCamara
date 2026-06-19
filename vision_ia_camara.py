@@ -85,6 +85,7 @@ class SeniorVisionSystem:
         return self.is_detection_running
 
     def _update_camera(self):
+        """Captura frames continuamente de la cámara"""
         # Si es un entero, asumimos cámara USB local y usamos CAP_DSHOW en Windows.
         # Si es string (IP de Droidcam), omitimos CAP_DSHOW.
         if isinstance(self.camera_index, int):
@@ -92,45 +93,56 @@ class SeniorVisionSystem:
         else:
             cap = cv2.VideoCapture(self.camera_index)
         
-        # Probar si realmente puede leer frames (a veces abre pero está bloqueada)
+        print(f"[CAMERA] Intentando abrir cámara: {self.camera_index}")
+        
+        # Probar si realmente puede leer frames
         can_read = False
-        for _ in range(30): # Esperar hasta 3 segundos para que la cámara caliente
+        for attempt in range(50):  # Esperar hasta 5 segundos para que la cámara caliente
             try:
-                ret, _ = cap.read()
-                if ret:
+                ret, frame = cap.read()
+                if ret and frame is not None:
                     can_read = True
+                    print(f"[CAMERA] ✅ Cámara abierta correctamente en intento {attempt+1}")
                     break
             except Exception as e:
-                print(f"[CRÍTICO] Error al leer cámara {self.camera_index}: {e}")
+                print(f"[CAMERA] Intento {attempt+1} - Error: {e}")
             time.sleep(0.1)
 
         if not cap.isOpened() or not can_read:
-            print(f"[CRÍTICO] No se pudo obtener imagen de la cámara principal (0).")
+            print(f"[CAMERA] ❌ No se pudo obtener imagen de la cámara {self.camera_index}")
             cap.release()
             self.is_camera_running = False
             return
 
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        # Configurar propiedades de la cámara
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         cap.set(cv2.CAP_PROP_FPS, 30)
-        # Asegurar orientación correcta (deshabilitar rotación automática)
         cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        
+        print("[CAMERA] Cámara configurada. Iniciando captura...")
+        frame_count = 0
 
         while self.is_camera_running:
             try:
                 ret, frame = cap.read()
             except Exception as e:
-                print(f"[ERROR OpenCV] Fallo al capturar frame: {e}")
+                print(f"[CAMERA ERROR] Fallo al capturar frame: {e}")
                 time.sleep(0.1)
                 continue
 
-            if not ret:
+            if not ret or frame is None:
+                print("[CAMERA] ⚠ No se pudo leer frame")
                 time.sleep(0.1)
                 continue
 
             # Voltear horizontalmente (efecto espejo) solo para cámara local
             if isinstance(self.camera_index, int):
                 frame = cv2.flip(frame, 1)
+
+            frame_count += 1
+            if frame_count % 30 == 0:  # Log cada 30 frames
+                print(f"[CAMERA] Frames capturados: {frame_count}")
 
             if self.is_detection_running:
                 results = self.yolo(frame, classes=[0, 15, 16], verbose=False)
@@ -140,7 +152,7 @@ class SeniorVisionSystem:
                         cls = "persona" if int(box.cls[0]) == 0 else "animal"
                         
                         label = cls.capitalize()
-                        color = (0, 255, 255) # Amarillo para animales
+                        color = (0, 255, 255)
                         genero_detectado = "N/A"
 
                         if cls == "persona":
@@ -149,13 +161,13 @@ class SeniorVisionSystem:
                                 genero_detectado = self.predict_gender(face)
                                 if genero_detectado == "femenino":
                                     label = "Femenino"
-                                    color = (180, 105, 255) # Rosa en BGR
+                                    color = (180, 105, 255)
                                 elif genero_detectado == "masculino":
                                     label = "Masculino"
-                                    color = (255, 144, 30) # Azul en BGR
+                                    color = (255, 144, 30)
                                 else:
                                     label = "Persona"
-                                    color = (255, 0, 255) # Magenta genérico
+                                    color = (255, 0, 255)
                         
                         cv2.rectangle(frame, (bx1, by1), (bx2, by2), color, 2)
                         cv2.putText(frame, f"{label}", (bx1, by1-10), 
@@ -169,10 +181,11 @@ class SeniorVisionSystem:
             with self.lock:
                 self.current_frame = frame.copy()
 
-            time.sleep(0.03)
+            time.sleep(0.033)  # ~30 FPS
 
-        # Liberar la cámara cuando se rompe el ciclo (is_camera_running == False)
+        print("[CAMERA] Cerrando cámara...")
         cap.release()
+        print("[CAMERA] Cámara cerrada")
 
     def get_frame(self):
         with self.lock:
