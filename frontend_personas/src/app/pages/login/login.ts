@@ -25,6 +25,8 @@ export class Login implements OnInit, OnDestroy {
   // --- VARIABLES DE ESTADO LÓGICO ---
   showPassword = false;
   isRegisterMode = false;
+  isForgotPasswordMode = false;
+  isResetPasswordMode = false;
   mostrandoOTP = false;
   googleUserTempData: any = null;
 
@@ -98,8 +100,58 @@ export class Login implements OnInit, OnDestroy {
   
   toggleRegisterMode() {
     this.isRegisterMode = !this.isRegisterMode;
+    this.isForgotPasswordMode = false;
+    this.isResetPasswordMode = false;
     this.confirmPassword = ''; this.email = ''; this.password = '';
     this.cdr.detectChanges();
+  }
+
+  toggleForgotPasswordMode() {
+    this.isForgotPasswordMode = !this.isForgotPasswordMode;
+    this.isRegisterMode = false;
+    this.isResetPasswordMode = false;
+    this.mostrandoOTP = false;
+    this.email = '';
+    this.password = '';
+    this.codigoOTP = '';
+    this.cdr.detectChanges();
+  }
+
+  requestPasswordReset() {
+    if (!this.email) {
+      this.showToast('Ingresa tu correo para recuperar la contraseña.', 'error');
+      return;
+    }
+    this.http.post('http://127.0.0.1:8000/api/forgot-password', { correo: this.email }).subscribe({
+      next: () => {
+        this.isForgotPasswordMode = false;
+        this.isResetPasswordMode = true;
+        this.showToast('Código enviado a tu correo.', 'success');
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => this.showToast(err.error?.detail || 'Error solicitando código', 'error')
+    });
+  }
+
+  confirmPasswordReset() {
+    if (!this.codigoOTP || !this.password) {
+      this.showToast('Llena todos los campos.', 'error');
+      return;
+    }
+    this.http.post('http://127.0.0.1:8000/api/reset-password', {
+      correo: this.email,
+      codigo: this.codigoOTP,
+      nueva_password: this.password
+    }).subscribe({
+      next: () => {
+        this.isResetPasswordMode = false;
+        this.password = '';
+        this.codigoOTP = '';
+        this.showToast('Contraseña cambiada. Ahora puedes iniciar sesión.', 'success');
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => this.showToast(err.error?.detail || 'Error al cambiar contraseña', 'error')
+    });
   }
 
   onValidateCredentialsDirect(txtEmail: string, txtPass: string, txtConfirm: string) {
@@ -123,15 +175,25 @@ export class Login implements OnInit, OnDestroy {
       this.http.post('http://127.0.0.1:8000/api/register', { correo, password: pass }).subscribe({
         next: () => {
           this.isRegisterMode = false;
-          this.showToast('¡Cuenta creada! Redirigiendo a verificación OTP.', 'success');
-          this.mostrandoOTP = true;
-          this.cdr.detectChanges();
+          this.showToast('¡Cuenta creada! Enviando código de acceso...', 'success');
+          // 🚀 Trigger login to send the OTP email automatically
+          this.http.post('http://127.0.0.1:8000/api/login', { correo, password: pass }).subscribe({
+            next: () => {
+              this.mostrandoOTP = true;
+              this.cdr.detectChanges();
+            },
+            error: () => this.showToast('Error al enviar el código de acceso.', 'error')
+          });
         },
         error: (err: any) => this.showToast(err.error?.detail || 'Error de Registro', 'error')
       });
     } else {
       this.http.post('http://127.0.0.1:8000/api/login', { correo, password: pass }).subscribe({
-        next: () => { this.mostrandoOTP = true; this.cdr.detectChanges(); },
+        next: () => { 
+          this.showToast('Código de verificación (OTP) enviado a tu correo.', 'success');
+          this.mostrandoOTP = true; 
+          this.cdr.detectChanges(); 
+        },
         error: (err: any) => this.showToast('Credenciales incorrectas.', 'error')
       });
     }
@@ -155,6 +217,7 @@ export class Login implements OnInit, OnDestroy {
     try {
       const usuario = await this.authService.loginWithGoogle();
       this.email = usuario.correo;
+      this.showToast('Código de verificación (OTP) enviado a tu correo de Google.', 'success');
       this.mostrandoOTP = true;
       this.cdr.detectChanges();
     } catch (error) { this.showToast('Google Sign-In interrumpido.', 'error'); }
@@ -359,7 +422,19 @@ export class Login implements OnInit, OnDestroy {
       },
       error: (err: any) => {
         this.stopFaceIDScan();
-        this.showToast('El rostro analizado no coincide con las firmas registradas.', 'error', 'Acceso Denegado');
+        
+        let mensajeError = 'El rostro analizado no coincide con las firmas registradas.';
+        if (err.status === 404 || (err.error?.detail && err.error.detail.includes('Usuario no encontrado'))) {
+          mensajeError = 'Credenciales incorrectas.';
+          // Limpiar formulario para forzar a iniciar de nuevo
+          this.email = '';
+          this.password = '';
+        } else if (err.error?.detail) {
+          mensajeError = err.error.detail;
+        }
+
+        this.showToast(mensajeError, 'error', 'Acceso Denegado');
+        this.cdr.detectChanges();
       }
     });
   }

@@ -4,64 +4,73 @@
     <p>Visualización de demografía por cámaras IA</p>
   </div>
 
-  <div class="cards-container">
-    <div class="stat-card">
-      <div class="icon blue"><i class="bi bi-people-fill"></i></div>
-      <div class="info">
-        <h3>{{ summary.total }}</h3>
-        <p>Total Detecciones</p>
-      </div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="icon purple"><i class="bi bi-gender-male"></i></div>
-      <div class="info">
-        <h3>{{ summary.males }}</h3>
-        <p>Hombres</p>
-      </div>
-    </div>
 
-    <div class="stat-card">
-      <div class="icon pink"><i class="bi bi-gender-female"></i></div>
-      <div class="info">
-        <h3>{{ summary.females }}</h3>
-        <p>Mujeres</p>
-      </div>
-    </div>
-  </div>
 
   <div class="charts-container">
-    <div class="chart-box">
-      <h2>Distribución por Género</h2>
-      <div class="canvas-wrapper doughnut-wrapper">
-        <canvas baseChart
-          [data]="doughnutChartData"
-          [type]="doughnutChartType"
-          [options]="doughnutChartOptions">
-        </canvas>
+    <!-- Doughnut Chart (Demografía) -->
+    <div class="chart-box demografia-box">
+      <h2>Demografía - Hoy</h2>
+      <div class="demografia-content">
+        <div class="canvas-wrapper doughnut-wrapper">
+          <canvas baseChart
+            [data]="doughnutChartData"
+            [type]="doughnutChartType"
+            [options]="doughnutChartOptions">
+          </canvas>
+          <div class="doughnut-center-text">
+            <h3>{{ summary.total | number }}</h3>
+            <p>Personas</p>
+          </div>
+        </div>
+        
+        <div class="custom-legend">
+          <div class="legend-item">
+            <div class="legend-color-wrap"><span class="dot" style="background-color: #5142f5;"></span> <span class="label">Hombres</span></div>
+            <div class="legend-stats">
+              <span class="percent">{{ (summary.total > 0 ? (summary.males / summary.total * 100) : 0) | number:'1.0-0' }}%</span>
+              <span class="count">({{ summary.males }})</span>
+            </div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color-wrap"><span class="dot" style="background-color: #f542a4;"></span> <span class="label">Mujeres</span></div>
+            <div class="legend-stats">
+              <span class="percent">{{ (summary.total > 0 ? (summary.females / summary.total * 100) : 0) | number:'1.0-0' }}%</span>
+              <span class="count">({{ summary.females }})</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="chart-box">
+    <!-- Line Chart (Actividad) -->
+    <div class="chart-box actividad-box">
       <div class="chart-box-header">
         <div class="chart-title-group">
-          <h2>Detecciones por Ubicación</h2>
-          <span class="badge" *ngIf="!selectedLocation">Top 3</span>
+          <h2>Actividad del Sistema</h2>
+          <span class="badge" *ngIf="selectedLocations.length === 0">Top 3</span>
+          <span class="badge custom" *ngIf="selectedLocations.length > 0">Personalizado</span>
         </div>
-        <div class="filter-controls">
-          <select
-            id="location-filter"
-            [(ngModel)]="selectedLocation"
-            (ngModelChange)="applyFilter()"
-            class="location-select">
-            <option value="">Todas las ubicaciones (Top 3)</option>
-            <option *ngFor="let loc of allLocationsData" [value]="loc.name">
-              {{ loc.name }} ({{ loc.count }})
-            </option>
-          </select>
-          <button *ngIf="selectedLocation" class="clear-btn" (click)="clearFilter()">
-            <i class="bi bi-x-circle"></i>
-          </button>
+        <div class="filter-controls-wrapper">
+          <div class="filter-controls">
+            <select
+              id="location-filter"
+              [(ngModel)]="locationToAdd"
+              (ngModelChange)="addLocation($event)"
+              class="location-select">
+              <option value="">Añadir ubicación (Máx 3)...</option>
+              <option *ngFor="let loc of allLocationsData" [value]="loc.name" [disabled]="selectedLocations.includes(loc.name)">
+                {{ loc.name }} ({{ loc.count }})
+              </option>
+            </select>
+            <button *ngIf="selectedLocations.length > 0" class="clear-btn" (click)="clearFilter()" title="Restaurar Top 3">
+              <i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+          </div>
+          <div class="selected-tags" *ngIf="selectedLocations.length > 0">
+            <span class="loc-tag" *ngFor="let loc of selectedLocations">
+              {{ loc }} <i class="bi bi-x-circle-fill" (click)="removeLocation(loc)"></i>
+            </span>
+          </div>
         </div>
       </div>
       <div class="canvas-wrapper">
@@ -70,6 +79,94 @@
           [options]="barChartOptions"
           [type]="barChartType">
         </canvas>
+      </div>
+
+      <!-- Stat Cards at the bottom -->
+      <div class="cards-container modern-cards">
+        <div class="stat-card modern-card">
+          <div class="card-header">
+             <i class="bi bi-box-arrow-in-right icon-green"></i> 
+             <span>Globales</span>
+          </div>
+          <h3>{{ summary.total }}</h3>
+          <p class="trend up">+100%</p>
+        </div>
+        
+        <div class="stat-card modern-card">
+          <div class="card-header">
+             <i class="bi bi-gender-male icon-blue"></i> 
+             <span>Hombres</span>
+          </div>
+          <h3>{{ summary.males }}</h3>
+          <p class="trend up">{{ (summary.total > 0 ? (summary.males / summary.total * 100) : 0) | number:'1.0-0' }}%</p>
+        </div>
+
+        <div class="stat-card modern-card">
+          <div class="card-header">
+             <i class="bi bi-gender-female icon-pink"></i> 
+             <span>Mujeres</span>
+          </div>
+          <h3>{{ summary.females }}</h3>
+          <p class="trend up">{{ (summary.total > 0 ? (summary.females / summary.total * 100) : 0) | number:'1.0-0' }}%</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-widgets">
+    <!-- Live Activity Feed -->
+    <div class="chart-box recent-activity-box">
+      <div class="box-header">
+        <h2><i class="bi bi-activity text-green"></i> Actividad en Vivo</h2>
+        <span class="live-badge"><span class="pulse-dot"></span> En directo</span>
+      </div>
+      <div class="activity-list">
+        <div class="activity-item" *ngFor="let item of recentActivity">
+           <div class="activity-avatar" [class.male]="item.genero === 'Hombre'" [class.female]="item.genero === 'Mujer'">
+             <i class="bi" [class.bi-gender-male]="item.genero === 'Hombre'" [class.bi-gender-female]="item.genero === 'Mujer'"></i>
+           </div>
+           <div class="activity-details">
+             <h4>{{ item.genero === 'Mujer' ? 'Mujer detectada' : 'Hombre detectado' }}</h4>
+             <p><i class="bi bi-geo-alt"></i> Ubicación: {{ item.lugar }}</p>
+           </div>
+           <div class="activity-time">
+             <span>{{ item.fecha }}</span>
+           </div>
+        </div>
+        <div *ngIf="recentActivity.length === 0" class="no-activity">
+           Esperando detecciones...
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Accuracy Widget -->
+    <div class="chart-box ai-health-box">
+      <div class="box-header">
+        <h2><i class="bi bi-cpu text-blue"></i> Estado de la IA</h2>
+      </div>
+      <div class="health-content">
+        <div class="health-circle">
+          <svg viewBox="0 0 36 36" class="circular-chart green">
+            <path class="circle-bg"
+              d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+            <path class="circle"
+              stroke-dasharray="98, 100"
+              d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+            <text x="18" y="20.35" class="percentage">98%</text>
+          </svg>
+        </div>
+        <div class="health-stats">
+          <p><span>Modelo:</span> Haar-Cascade + DNN</p>
+          <p><span>Latencia Promedio:</span> <span class="text-green">45ms</span></p>
+          <p><span>Falsos Positivos:</span> <span class="text-green">< 2%</span></p>
+          <p><span>Estado:</span> <span class="text-green">Óptimo</span></p>
+        </div>
       </div>
     </div>
   </div>

@@ -23,6 +23,14 @@ export class Sidebar implements OnInit {
       if (storedUser) {
         try {
           this.user = JSON.parse(storedUser);
+          
+          // Si no hay nombre, generar uno a partir del correo
+          if (!this.user.nombre && this.user.correo) {
+            const emailName = this.user.correo.split('@')[0];
+            // Capitalizar la primera letra
+            this.user.nombre = emailName.charAt(0).toUpperCase() + emailName.slice(1);
+          }
+          
         } catch (e) {
           console.error('Error parsing user data', e);
         }

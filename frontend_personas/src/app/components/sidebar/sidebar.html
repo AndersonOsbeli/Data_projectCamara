@@ -65,10 +65,10 @@
 
   <!-- Profile Card at Bottom -->
   <div class="sidebar-profile">
-    <img [src]="user?.foto ? user.foto : 'https://api.dicebear.com/7.x/adventurer/svg?seed=' + (user?.nombre || 'Admin')" alt="Avatar" class="profile-avatar">
+    <img [src]="user?.foto ? user.foto : 'https://api.dicebear.com/7.x/adventurer/svg?seed=' + (user?.nombre || 'Usuario')" alt="Avatar" class="profile-avatar">
     <div class="profile-info">
-      <span class="profile-name">{{ user?.nombre || 'Admin' }}</span>
-      <span class="profile-role" [title]="user?.correo || 'Administrador'">{{ user?.correo || 'Administrador' }}</span>
+      <span class="profile-name">{{ user?.nombre || 'Usuario' }}</span>
+      <span class="profile-role" [title]="user?.correo || 'Usuario registrado'">{{ user?.correo || 'Usuario registrado' }}</span>
     </div>
     <i class="bi bi-chevron-down profile-chevron"></i>
   </div>

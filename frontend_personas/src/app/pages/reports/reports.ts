@@ -140,8 +140,29 @@ export class Reports implements OnInit {
   // --- Email Report Logic ---
   isEmailModalOpen = false;
   emailDestination = '';
-  emailPeriod = 1; // 1 or 3
+  emailPeriod = '10'; // default period string
   isSendingEmail = false;
+
+  // --- Toast Logic ---
+  toast = {
+    visible: false,
+    type: 'success' as 'success' | 'error' | 'info',
+    title: '',
+    message: '',
+  };
+  private toastTimer: any = null;
+
+  showToast(message: string, type: 'success' | 'error' | 'info' = 'success', title?: string) {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toast = { visible: true, type, title: title || (type === 'error' ? 'Error' : 'Éxito'), message };
+    this.cdr.detectChanges();
+    this.toastTimer = setTimeout(() => this.closeToast(), 4000);
+  }
+
+  closeToast() {
+    this.toast.visible = false;
+    this.cdr.detectChanges();
+  }
 
   openEmailModal() {
     this.isEmailModalOpen = true;
@@ -153,20 +174,22 @@ export class Reports implements OnInit {
 
   sendEmailReport() {
     if (!this.emailDestination || !this.emailDestination.includes('@')) {
-      alert('Por favor, ingresa un correo electrónico válido.');
+      this.showToast('Por favor, ingresa un correo electrónico válido.', 'error', 'Correo Inválido');
       return;
     }
 
     this.isSendingEmail = true;
     this.dataService.sendReportEmail(this.emailDestination, this.emailPeriod).subscribe({
       next: (res) => {
-        alert(res.message || 'Reporte enviado con éxito.');
+        this.showToast(res.message || 'Reporte enviado con éxito.', 'success', 'Enviado');
         this.isSendingEmail = false;
         this.closeEmailModal();
       },
       error: (err) => {
-        alert('Error al enviar el correo: ' + (err.error?.detail || err.message));
+        const errorMsg = err.error?.detail || err.message || 'Error desconocido';
+        this.showToast('Error al enviar el correo: ' + errorMsg, 'error', 'Fallo al Enviar');
         this.isSendingEmail = false;
+        this.cdr.detectChanges();
       }
     });
   }

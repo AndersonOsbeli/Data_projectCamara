@@ -1,4 +1,28 @@
 <div class="reports-container">
+  @if (toast.visible) {
+  <div class="toast-overlay" (click)="closeToast()">
+    <div class="toast-card" [class]="'toast-card toast-' + toast.type" (click)="$event.stopPropagation()">
+      <div class="toast-icon-wrap">
+        @if (toast.type === 'success') {
+          <i class="bi bi-check-circle-fill"></i>
+        } @else if (toast.type === 'error') {
+          <i class="bi bi-x-circle-fill"></i>
+        } @else {
+          <i class="bi bi-info-circle-fill"></i>
+        }
+      </div>
+      <div class="toast-content">
+        <p class="toast-title">{{ toast.title }}</p>
+        <p class="toast-message">{{ toast.message }}</p>
+      </div>
+      <button type="button" class="toast-close" (click)="closeToast()" aria-label="Cerrar">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <div class="toast-progress"></div>
+    </div>
+  </div>
+  }
+
   <div class="header-section">
     <div class="titles">
       <h1>Reportes e Historial</h1>
@@ -29,8 +53,10 @@
       <div class="form-group">
         <label>Periodo del Reporte</label>
         <select [(ngModel)]="emailPeriod">
-          <option [value]="1">Últimas 24 horas (1 día)</option>
-          <option [value]="3">Últimos 3 días</option>
+          <option value="10">Primeros 10 registros</option>
+          <option value="50">Los 50 registros</option>
+          <option value="24h">Las últimas 24 horas (1 día)</option>
+          <option value="all">Todos los registros</option>
         </select>
       </div>
 

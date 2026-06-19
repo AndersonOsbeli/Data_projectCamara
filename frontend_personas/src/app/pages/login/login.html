@@ -22,7 +22,7 @@
 </div>
 }
 
-@if (!mostrandoOTP) {
+@if (!mostrandoOTP && !isForgotPasswordMode && !isResetPasswordMode) {
 <section class="login-container">
   <div class="login-box">
     
@@ -40,7 +40,7 @@
         <label for="email">Correo Electrónico</label>
         <div class="input-wrapper">
           <i class="bi bi-envelope"></i>
-          <input #emailInput id="email" type="email" placeholder="usuario@example.com">
+          <input id="email" type="email" placeholder="usuario@example.com" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" autocomplete="off" name="email_off">
         </div>
       </div>
 
@@ -48,7 +48,7 @@
         <label for="password">Contraseña</label>
         <div class="input-wrapper input-password">
           <i class="bi bi-lock"></i>
-          <input #passwordInput id="password" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••">
+          <input id="password" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••" [(ngModel)]="password" [ngModelOptions]="{standalone: true}" autocomplete="new-password" name="password_off">
           <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
             <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
           </button>
@@ -60,19 +60,25 @@
         <label for="confirmPassword">Confirmar contraseña</label>
         <div class="input-wrapper input-password">
           <i class="bi bi-lock-fill"></i>
-          <input #confirmInput id="confirmPassword" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••">
+          <input id="confirmPassword" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••" [(ngModel)]="confirmPassword" [ngModelOptions]="{standalone: true}" autocomplete="new-password" name="confirm_password_off">
         </div>
       </div>
       }
 
       <button class="btn-signin" type="button" 
-        (click)="onValidateCredentialsDirect(emailInput.value, passwordInput.value, isRegisterMode ? confirmInput.value : '')">
+        (click)="onValidateCredentialsDirect(email, password, isRegisterMode ? confirmPassword : '')">
         {{ isRegisterMode ? 'Crear cuenta' : 'Ingresar al Sistema' }}
       </button>
 
       <button class="btn-register-toggle" type="button" (click)="toggleRegisterMode()">
         {{ isRegisterMode ? '← Volver a iniciar sesión' : 'Registrarse' }}
       </button>
+
+      @if (!isRegisterMode) {
+      <div style="text-align: center; margin-top: 15px;">
+        <a href="javascript:void(0)" (click)="toggleForgotPasswordMode()" style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; text-decoration: none; transition: 0.2s;" onmouseover="this.style.color='#00e5ff'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'">¿Olvidaste tu contraseña?</a>
+      </div>
+      }
 
       <div class="divider-row">
         <span></span>
@@ -86,7 +92,7 @@
           Google
         </button>
         
-        <button type="button" class="method-button faceid" (click)="onFaceIDAction(emailInput.value)">
+        <button type="button" class="method-button faceid" (click)="onFaceIDAction(email)">
           <i class="bi bi-camera"></i>
           {{ isRegisterMode ? 'Saber cómo enrolar rostro' : 'Iniciar con Face ID' }}
         </button>
@@ -133,6 +139,70 @@
 </section>
 }
 
+@if (isForgotPasswordMode) {
+<section class="login-container">
+  <div class="login-box">
+    <div class="logo-section">
+      <div class="logo-icon"><i class="bi bi-shield-lock"></i></div>
+      <h1>Recuperar Acceso</h1>
+      <p class="subtitle">Ingresa tu correo para enviarte un código de cambio de contraseña.</p>
+    </div>
+    <div class="login-form">
+      <div class="form-group">
+        <label for="emailReset">Correo Electrónico</label>
+        <div class="input-wrapper">
+          <i class="bi bi-envelope"></i>
+          <input id="emailReset" type="email" placeholder="usuario@example.com" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" autocomplete="off" name="email_reset_off">
+        </div>
+      </div>
+      <button class="btn-signin" type="button" (click)="requestPasswordReset()">
+        Enviar Código
+      </button>
+      <button class="btn-register-toggle" type="button" (click)="toggleForgotPasswordMode()">
+        ← Cancelar y Volver
+      </button>
+    </div>
+  </div>
+</section>
+}
+
+@if (isResetPasswordMode) {
+<section class="login-container">
+  <div class="login-box">
+    <div class="logo-section">
+      <div class="logo-icon"><i class="bi bi-key"></i></div>
+      <h1>Nueva Contraseña</h1>
+      <p class="subtitle">Ingresa el código que recibiste y crea una contraseña nueva.</p>
+    </div>
+    <div class="login-form">
+      <div class="form-group">
+        <label for="otpReset">Código de Verificación</label>
+        <div class="input-wrapper">
+          <i class="bi bi-123"></i>
+          <input id="otpReset" type="text" placeholder="000000" maxlength="6" [(ngModel)]="codigoOTP" [ngModelOptions]="{standalone: true}" autocomplete="off" name="otp_reset_off">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="newPass">Nueva Contraseña</label>
+        <div class="input-wrapper input-password">
+          <i class="bi bi-lock"></i>
+          <input id="newPass" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••" [(ngModel)]="password" [ngModelOptions]="{standalone: true}" autocomplete="new-password" name="new_pass_off">
+          <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+            <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+          </button>
+        </div>
+      </div>
+      <button class="btn-signin" type="button" (click)="confirmPasswordReset()">
+        Cambiar Contraseña
+      </button>
+      <button class="btn-register-toggle" type="button" (click)="toggleForgotPasswordMode()">
+        ← Cancelar
+      </button>
+    </div>
+  </div>
+</section>
+}
+
 @if (mostrandoOTP) {
 <section class="otp-container">
   <div class="otp-box">
@@ -149,7 +219,7 @@
         <label for="otp">Código de Seguridad (OTP)</label>
         <div class="input-wrapper">
           <i class="bi bi-shield-check"></i>
-          <input id="otp" type="text" [(ngModel)]="codigoOTP" maxlength="6" placeholder="000000" class="otp-input">
+          <input id="otp" type="text" [(ngModel)]="codigoOTP" maxlength="6" placeholder="000000" class="otp-input" autocomplete="off" name="otp_login_off">
         </div>
       </div>
 

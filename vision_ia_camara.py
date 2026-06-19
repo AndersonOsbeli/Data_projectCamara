@@ -87,11 +87,12 @@ class SeniorVisionSystem:
     def _update_camera(self):
         """Captura frames continuamente de la cámara"""
         # Si es un entero, asumimos cámara USB local y usamos CAP_DSHOW en Windows.
-        # Si es string (IP de Droidcam), omitimos CAP_DSHOW.
+        # Si es string (IP de Droidcam), usamos CAP_FFMPEG para evitar cuelgues.
         if isinstance(self.camera_index, int):
             cap = cv2.VideoCapture(self.camera_index, cv2.CAP_DSHOW)
         else:
-            cap = cv2.VideoCapture(self.camera_index)
+            os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "timeout;5000"
+            cap = cv2.VideoCapture(self.camera_index, cv2.CAP_FFMPEG)
         
         print(f"[CAMERA] Intentando abrir cámara: {self.camera_index}")
         

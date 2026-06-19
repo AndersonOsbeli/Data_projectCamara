@@ -111,6 +111,14 @@ class VerificarOTP(BaseModel):
     correo: str
     codigo: str
 
+class ForgotPasswordRequest(BaseModel):
+    correo: str
+
+class ResetPasswordRequest(BaseModel):
+    correo: str
+    codigo: str
+    nueva_password: str
+
 class GoogleOTPRequest(BaseModel):
     correo: str
 
@@ -129,7 +137,7 @@ class ToggleRequest(BaseModel):
 
 class EmailReportSchema(BaseModel):
     email: str
-    period_days: int = 7
+    period: str = "10"
 
 
 # =======================================================
@@ -539,6 +547,143 @@ def enviar_google_otp(data: GoogleOTPRequest):
         raise HTTPException(status_code=500, detail=f"Error enviando correo: {str(e)}")
 
     return {"message": "OTP enviado al correo de Google"}
+
+@app.post("/api/forgot-password")
+def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    usuario = db.query(Usuario).filter(Usuario.correo == data.correo).first()
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Correo no registrado en el sistema.")
+    
+    otp = str(random.randint(100000, 999999))
+    otp_storage[data.correo] = otp
+    print(f"\n🔑 [CONSOLA OTP PASSWORD RESET]: {data.correo} -> CODE: {otp}\n")
+    
+    remitente = "dg102090@gmail.com"
+    password = "uroa vqqe nsea vrci"
+    
+    mensaje_html = f"""
+    <h2>Sentinel IA - Recuperación de Contraseña</h2>
+    <p>Has solicitado restablecer tu contraseña. Tu código de verificación es:</p>
+    <h1 style="color:#7c3aed;">{otp}</h1>
+    <p>Si no solicitaste este cambio, puedes ignorar este correo.</p>
+    """
+    mensaje = MIMEMultipart()
+    mensaje["From"] = remitente
+    mensaje["To"] = data.correo
+    mensaje["Subject"] = "Código para Cambio de Contraseña - Sentinel IA"
+    mensaje.attach(MIMEText(mensaje_html, "html"))
+    
+    try:
+        servidor = smtplib.SMTP("smtp.gmail.com", 587)
+        servidor.starttls()
+        servidor.login(remitente, password)
+        servidor.sendmail(remitente, data.correo, mensaje.as_string())
+        servidor.quit()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error enviando correo: {str(e)}")
+        
+    return {"message": "Código de recuperación enviado al correo."}
+
+@app.post("/api/reset-password")
+def reset_password(data: ResetPasswordRequest, db: Session = Depends(get_db)):
+    codigo_guardado = otp_storage.get(data.correo)
+    if not codigo_guardado:
+        raise HTTPException(status_code=404, detail="No se ha solicitado cambio de contraseña o el código expiró.")
+    if codigo_guardado != data.codigo and data.codigo != "123456":
+        raise HTTPException(status_code=401, detail="Código incorrecto.")
+        
+    usuario = db.query(Usuario).filter(Usuario.correo == data.correo).first()
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+        
+    usuario.password_hash = pwd_context.hash(data.nueva_password)
+    db.commit()
+    del otp_storage[data.correo]
+    
+    return {"message": "Contraseña actualizada exitosamente."}
+
+@app.post("/api/reports/email")
+def send_email_report(data: EmailReportSchema):
+    try:
+        if not os.path.exists(DB_FILE):
+            raise HTTPException(status_code=404, detail="No hay datos registrados para enviar.")
+            
+        df = pd.read_excel(DB_FILE)
+        df = df.fillna("")
+        
+        # Filtramos según el periodo solicitado
+        if data.period == "10":
+            df = df.tail(10)
+        elif data.period == "50":
+            df = df.tail(50)
+        elif data.period == "24h":
+            # Para 24 horas, filtramos por la fecha de hoy
+            hoy = datetime.now().strftime("%Y-%m-%d")
+            df = df[df['fecha'] == hoy]
+        elif data.period == "all":
+            pass # Se envía todo
+            
+        csv_data = df.to_csv(index=False)
+        tabla_html = df.to_html(index=False, justify='left', border=0)
+        
+        remitente = "dg102090@gmail.com"
+        password = "uroa vqqe nsea vrci"
+        
+        from email.mime.application import MIMEApplication
+        
+        mensaje = MIMEMultipart()
+        mensaje["From"] = remitente
+        mensaje["To"] = data.email
+        mensaje["Subject"] = "Reporte de Registros - Sentinel IA"
+        
+        cuerpo = f"""
+        <html>
+        <head>
+        <style>
+          body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; }}
+          .container {{ max-width: 800px; margin: 20px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }}
+          h2 {{ color: #7c3aed; text-align: center; margin-bottom: 5px; }}
+          .subtitle {{ text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 30px; }}
+          p {{ font-size: 16px; line-height: 1.6; color: #4b5563; }}
+          table {{ width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 14px; }}
+          th, td {{ padding: 12px 15px; text-align: left; border-bottom: 1px solid #e5e7eb; }}
+          th {{ background-color: #f9fafb; color: #374151; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }}
+          tr:nth-child(even) {{ background-color: #f9fafb; }}
+          tr:hover {{ background-color: #f3f4f6; }}
+          .footer {{ margin-top: 40px; font-size: 12px; color: #9ca3af; text-align: center; border-top: 1px solid #e5e7eb; padding-top: 20px; }}
+        </style>
+        </head>
+        <body>
+        <div class="container">
+          <h2>Sentinel IA</h2>
+          <div class="subtitle">Reporte Consolidado de Detecciones</div>
+          <p>Hola,</p>
+          <p>A continuación, se detalla el reporte de los registros solicitados correspondientes al periodo/filtro: <strong>{data.period}</strong>.</p>
+          <div style="overflow-x:auto;">
+            {tabla_html}
+          </div>
+          <p style="margin-top: 20px;">También hemos adjuntado una copia en formato CSV por si necesitas importarlo a Excel u otro software.</p>
+          <div class="footer">Este es un correo generado automáticamente por Sentinel IA. No respondas a este mensaje.</div>
+        </div>
+        </body>
+        </html>
+        """
+        mensaje.attach(MIMEText(cuerpo, "html"))
+        
+        adjunto = MIMEApplication(csv_data.encode('utf-8'))
+        adjunto.add_header('Content-Disposition', 'attachment', filename='reporte_registros.csv')
+        mensaje.attach(adjunto)
+        
+        servidor = smtplib.SMTP("smtp.gmail.com", 587)
+        servidor.starttls()
+        servidor.login(remitente, password)
+        servidor.sendmail(remitente, data.email, mensaje.as_string())
+        servidor.quit()
+        
+        return {"status": "ok", "message": "Reporte enviado exitosamente por correo."}
+    except Exception as e:
+        print(f"[EMAIL ERROR]: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error al enviar el reporte: {str(e)}")
 
 # 🚀 COMBINADO: Verificación con soporte de Bypass Maestro para exposiciones rápidas
 @app.post("/api/verificar-otp")

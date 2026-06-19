@@ -22,43 +22,77 @@ export class Dashboard implements OnInit {
 
   // All locations data (sorted by count desc)
   allLocationsData: { name: string; count: number }[] = [];
-  // Selected location for filter (empty = show top 3)
-  selectedLocation: string = '';
+  // Selected locations for filter (empty = show top 3)
+  selectedLocations: string[] = [];
+  locationToAdd: string = '';
+
+  // Actividad Reciente
+  recentActivity: any[] = [];
 
   // Doughnut Chart Data
   public doughnutChartLabels: string[] = ['Hombres', 'Mujeres'];
   public doughnutChartData: ChartData<'doughnut'> = {
     labels: this.doughnutChartLabels,
     datasets: [
-      { data: [0, 0], backgroundColor: ['#5142f5', '#f542a4'], borderWidth: 0 }
+      { 
+        data: [0, 0], 
+        backgroundColor: ['#5142f5', '#f542a4'], 
+        borderWidth: 0,
+        hoverOffset: 4
+      }
     ]
   };
   public doughnutChartType: ChartType = 'doughnut';
-  public doughnutChartOptions: ChartConfiguration['options'] = {
+  public doughnutChartOptions: any = {
     responsive: true,
     maintainAspectRatio: false,
+    cutout: '75%',
     plugins: {
-      legend: { position: 'bottom', labels: { color: '#ffffff' } }
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+        padding: 12,
+        titleFont: { size: 14, family: "'Inter', sans-serif" },
+        bodyFont: { size: 13, family: "'Inter', sans-serif" }
+      }
     }
   };
 
-  // Bar Chart Data
-  public barChartOptions: ChartConfiguration['options'] = {
+  // Bar Chart Data (Actividad)
+  public barChartOptions: any = {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
-      x: { grid: { color: '#2a2b36' }, ticks: { color: '#ffffff' } },
-      y: { grid: { color: '#2a2b36' }, ticks: { color: '#ffffff' } }
+      x: { 
+        grid: { color: 'rgba(255, 255, 255, 0.05)' }, 
+        ticks: { color: '#9ca3af', font: { family: "'Inter', sans-serif" } } 
+      },
+      y: { 
+        grid: { color: 'rgba(255, 255, 255, 0.05)' }, 
+        ticks: { color: '#9ca3af', font: { family: "'Inter', sans-serif" } },
+        beginAtZero: true
+      }
     },
     plugins: {
-      legend: { display: false }
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+        padding: 12,
+        titleFont: { size: 14, family: "'Inter', sans-serif" },
+        bodyFont: { size: 13, family: "'Inter', sans-serif" }
+      }
     }
   };
   public barChartType: ChartType = 'bar';
   public barChartData: ChartData<'bar'> = {
     labels: [],
     datasets: [
-      { data: [], label: 'Detecciones', backgroundColor: '#29fd53', borderRadius: 5 }
+      { 
+        data: [], 
+        label: 'Detecciones', 
+        backgroundColor: ['#00e676', '#5142f5', '#f542a4'],
+        borderRadius: 6
+      }
     ]
   };
 
@@ -120,6 +154,16 @@ export class Dashboard implements OnInit {
 
         // Pintamos el Top 3 de ubicaciones en las barras
         this.applyFilter();
+        // 4. Actividad Reciente en Vivo
+        this.recentActivity = [...registros].reverse().slice(0, 5).map(r => {
+          const isFemale = r.genero && (r.genero.toLowerCase() === 'mujer' || r.genero.toLowerCase() === 'femenino' || r.genero.toLowerCase() === 'f');
+          const timeOnly = r.fecha ? r.fecha.split(' ')[1] || r.fecha : 'Ahora';
+          return {
+            genero: isFemale ? 'Mujer' : 'Hombre',
+            lugar: r.lugar || 'Desconocido',
+            fecha: timeOnly
+          };
+        });
         
         // Fuerza el redibujado de componentes estructurales de Angular v21
         this.cdr.detectChanges();
@@ -130,12 +174,8 @@ export class Dashboard implements OnInit {
   }
 
   updateChartTheme(isLight: boolean) {
-    const textColor = isLight ? '#1f2937' : '#ffffff';
-    const gridColor = isLight ? 'rgba(0, 0, 0, 0.08)' : '#2a2b36';
-
-    if (this.doughnutChartOptions?.plugins?.legend?.labels) {
-      this.doughnutChartOptions.plugins.legend.labels.color = textColor;
-    }
+    const textColor = isLight ? '#1f2937' : '#9ca3af';
+    const gridColor = isLight ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)';
 
     if (this.barChartOptions?.scales) {
       if (this.barChartOptions.scales['x']) {
@@ -152,8 +192,8 @@ export class Dashboard implements OnInit {
   applyFilter() {
     let filtered: { name: string; count: number }[];
 
-    if (this.selectedLocation) {
-      filtered = this.allLocationsData.filter(l => l.name === this.selectedLocation);
+    if (this.selectedLocations.length > 0) {
+      filtered = this.allLocationsData.filter(l => this.selectedLocations.includes(l.name));
     } else {
       filtered = this.allLocationsData.slice(0, 3);
     }
@@ -164,9 +204,9 @@ export class Dashboard implements OnInit {
         data: filtered.map(l => l.count),
         label: 'Detecciones',
         backgroundColor: filtered.map((_, i) =>
-          i === 0 ? '#29fd53' : i === 1 ? '#5142f5' : '#f542a4'
+          i === 0 ? '#00e676' : i === 1 ? '#5142f5' : '#f542a4'
         ),
-        borderRadius: 5
+        borderRadius: 6
       }]
     };
 
@@ -174,8 +214,26 @@ export class Dashboard implements OnInit {
     this.charts?.forEach(chart => chart.update());
   }
 
+  addLocation(name: string) {
+    if (!name) return;
+    if (this.selectedLocations.length >= 3) {
+      this.locationToAdd = '';
+      return;
+    }
+    if (!this.selectedLocations.includes(name)) {
+      this.selectedLocations.push(name);
+      this.applyFilter();
+    }
+    setTimeout(() => this.locationToAdd = '', 0);
+  }
+
+  removeLocation(name: string) {
+    this.selectedLocations = this.selectedLocations.filter(l => l !== name);
+    this.applyFilter();
+  }
+
   clearFilter() {
-    this.selectedLocation = '';
+    this.selectedLocations = [];
     this.applyFilter();
   }
 }
