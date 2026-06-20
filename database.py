@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-SERVER = r"localhost\SQLSERVERDAVID"
+SERVER = "DEPINFOR20\SQLEXPRESS"
 DATABASE = "SeniorIA"
 
 connection_string = (
