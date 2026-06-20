@@ -1,0 +1,954 @@
+[2026-06-03 00:22:52] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:22:52] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:22:52] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:22:54] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:22:54] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-03 00:26:04] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:26:04] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:26:04] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:26:05] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:26:06] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-03 00:27:16] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:27:16] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:27:16] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:27:16] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:27:17] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-03 00:27:17] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:17] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:17] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:18] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:18] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:18] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:18] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:18] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:18] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:18] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:18] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:18] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:18] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:19] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:19] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:19] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:19] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:19] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:19] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:19] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:19] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:19] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:20] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:20] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:20] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:20] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:20] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:20] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:20] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:20] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:20] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:20] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:21] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:21] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:21] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:21] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:21] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:21] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:21] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:21] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:21] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:21] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:22] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:22] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:22] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:22] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:22] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:22] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:22] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:22] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:22] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:22] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:23] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:23] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:23] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:23] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:23] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:23] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:23] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:23] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:23] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:24] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:24] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:24] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:24] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:24] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:24] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:24] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:24] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:24] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:24] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:25] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:25] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:25] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:25] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:25] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:25] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:25] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:25] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:25] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:25] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:26] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:26] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:26] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:26] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:26] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:26] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:26] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:26] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:26] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:27] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:27] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:27] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:27] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:27] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:27] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:27] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:27] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:27] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:27] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:28] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:28] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:28] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:28] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:28] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:28] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:28] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:28] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:28] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:28] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:29] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:29] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:29] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:29] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:29] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:29] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:29] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:29] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:29] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:30] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:30] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:30] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:30] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:30] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:30] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:30] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:30] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:30] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:30] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:31] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:31] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:31] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:31] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:31] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:31] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:31] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:31] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:31] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:32] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:32] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:32] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:32] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:32] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:32] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:32] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:32] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:32] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:32] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:33] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:33] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:33] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:33] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:33] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:33] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:33] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:33] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:33] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:33] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:34] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:34] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:34] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:34] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:34] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:34] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:34] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:34] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:34] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:35] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:35] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:35] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:35] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:35] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:35] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:35] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:35] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:35] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:35] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:36] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:36] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:36] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:36] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:36] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:36] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:36] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:36] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:36] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:36] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:37] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:37] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:37] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:37] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:37] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:37] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:37] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:37] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:37] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:38] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:38] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:38] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:38] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:38] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:38] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:38] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:38] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:38] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:38] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:39] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:39] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:27:39] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:27:39] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:27:39] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:27:39] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-03 00:27:45] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:27:45] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:27:45] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:27:45] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:27:45] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-03 00:27:50] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:27:50] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-03 00:27:50] [INFO] Abriendo cámara IP (DroidCam)...
+[2026-06-03 00:27:51] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:52] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:52] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:52] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:52] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:52] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:52] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:52] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:52] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:52] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:53] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:53] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:53] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:53] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:53] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:53] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:53] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:53] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:53] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:53] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:54] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:54] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:54] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:54] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:54] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:54] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:54] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:54] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:54] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:55] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:55] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:55] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:55] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:55] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:55] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:55] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:55] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:55] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:55] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:56] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:56] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:56] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:56] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:56] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:56] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:56] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:56] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:56] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:56] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:59] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:27:59] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:27:59] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:27:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:27:59] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:28:00] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-03 00:28:05] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:28:05] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-03 00:28:05] [INFO] Abriendo cámara IP (DroidCam)...
+[2026-06-03 00:28:07] [INFO] VideoCapture creado. cap.isOpened(): False
+[2026-06-03 00:28:07] [WARN] Warm-up intento 1: ret=False, frame=None
+[2026-06-03 00:28:07] [WARN] Warm-up intento 2: ret=False, frame=None
+[2026-06-03 00:28:08] [WARN] Warm-up intento 3: ret=False, frame=None
+[2026-06-03 00:28:08] [WARN] Warm-up intento 4: ret=False, frame=None
+[2026-06-03 00:28:08] [WARN] Warm-up intento 5: ret=False, frame=None
+[2026-06-03 00:28:08] [WARN] Warm-up intento 6: ret=False, frame=None
+[2026-06-03 00:28:08] [WARN] Warm-up intento 7: ret=False, frame=None
+[2026-06-03 00:28:08] [WARN] Warm-up intento 8: ret=False, frame=None
+[2026-06-03 00:28:08] [WARN] Warm-up intento 9: ret=False, frame=None
+[2026-06-03 00:28:08] [WARN] Warm-up intento 10: ret=False, frame=None
+[2026-06-03 00:28:08] [WARN] Warm-up intento 11: ret=False, frame=None
+[2026-06-03 00:28:08] [WARN] Warm-up intento 12: ret=False, frame=None
+[2026-06-03 00:28:09] [WARN] Warm-up intento 13: ret=False, frame=None
+[2026-06-03 00:28:09] [WARN] Warm-up intento 14: ret=False, frame=None
+[2026-06-03 00:28:09] [WARN] Warm-up intento 15: ret=False, frame=None
+[2026-06-03 00:28:09] [WARN] Warm-up intento 16: ret=False, frame=None
+[2026-06-03 00:28:09] [WARN] Warm-up intento 17: ret=False, frame=None
+[2026-06-03 00:28:09] [WARN] Warm-up intento 18: ret=False, frame=None
+[2026-06-03 00:28:09] [WARN] Warm-up intento 19: ret=False, frame=None
+[2026-06-03 00:28:09] [WARN] Warm-up intento 20: ret=False, frame=None
+[2026-06-03 00:28:09] [WARN] Warm-up intento 21: ret=False, frame=None
+[2026-06-03 00:28:10] [WARN] Warm-up intento 22: ret=False, frame=None
+[2026-06-03 00:28:10] [WARN] Warm-up intento 23: ret=False, frame=None
+[2026-06-03 00:28:10] [WARN] Warm-up intento 24: ret=False, frame=None
+[2026-06-03 00:28:10] [WARN] Warm-up intento 25: ret=False, frame=None
+[2026-06-03 00:28:10] [WARN] Warm-up intento 26: ret=False, frame=None
+[2026-06-03 00:28:10] [WARN] Warm-up intento 27: ret=False, frame=None
+[2026-06-03 00:28:10] [WARN] Warm-up intento 28: ret=False, frame=None
+[2026-06-03 00:28:10] [WARN] Warm-up intento 29: ret=False, frame=None
+[2026-06-03 00:28:10] [WARN] Warm-up intento 30: ret=False, frame=None
+[2026-06-03 00:28:10] [CRÍTICO] No se pudo obtener imagen. cap.isOpened(): False, can_read: False
+[2026-06-03 00:28:22] [INFO] VideoCapture creado. cap.isOpened(): False
+[2026-06-03 00:28:22] [WARN] Warm-up intento 1: ret=False, frame=None
+[2026-06-03 00:28:22] [WARN] Warm-up intento 2: ret=False, frame=None
+[2026-06-03 00:28:22] [WARN] Warm-up intento 3: ret=False, frame=None
+[2026-06-03 00:28:22] [WARN] Warm-up intento 4: ret=False, frame=None
+[2026-06-03 00:28:22] [WARN] Warm-up intento 5: ret=False, frame=None
+[2026-06-03 00:28:22] [WARN] Warm-up intento 6: ret=False, frame=None
+[2026-06-03 00:28:22] [WARN] Warm-up intento 7: ret=False, frame=None
+[2026-06-03 00:28:23] [WARN] Warm-up intento 8: ret=False, frame=None
+[2026-06-03 00:28:23] [WARN] Warm-up intento 9: ret=False, frame=None
+[2026-06-03 00:28:23] [WARN] Warm-up intento 10: ret=False, frame=None
+[2026-06-03 00:28:23] [WARN] Warm-up intento 11: ret=False, frame=None
+[2026-06-03 00:28:23] [WARN] Warm-up intento 12: ret=False, frame=None
+[2026-06-03 00:28:23] [WARN] Warm-up intento 13: ret=False, frame=None
+[2026-06-03 00:28:23] [WARN] Warm-up intento 14: ret=False, frame=None
+[2026-06-03 00:28:23] [WARN] Warm-up intento 15: ret=False, frame=None
+[2026-06-03 00:28:23] [WARN] Warm-up intento 16: ret=False, frame=None
+[2026-06-03 00:28:23] [WARN] Warm-up intento 17: ret=False, frame=None
+[2026-06-03 00:28:24] [WARN] Warm-up intento 18: ret=False, frame=None
+[2026-06-03 00:28:24] [WARN] Warm-up intento 19: ret=False, frame=None
+[2026-06-03 00:28:24] [WARN] Warm-up intento 20: ret=False, frame=None
+[2026-06-03 00:28:24] [WARN] Warm-up intento 21: ret=False, frame=None
+[2026-06-03 00:28:24] [WARN] Warm-up intento 22: ret=False, frame=None
+[2026-06-03 00:28:24] [WARN] Warm-up intento 23: ret=False, frame=None
+[2026-06-03 00:28:24] [WARN] Warm-up intento 24: ret=False, frame=None
+[2026-06-03 00:28:24] [WARN] Warm-up intento 25: ret=False, frame=None
+[2026-06-03 00:28:24] [WARN] Warm-up intento 26: ret=False, frame=None
+[2026-06-03 00:28:25] [WARN] Warm-up intento 27: ret=False, frame=None
+[2026-06-03 00:28:25] [WARN] Warm-up intento 28: ret=False, frame=None
+[2026-06-03 00:28:25] [WARN] Warm-up intento 29: ret=False, frame=None
+[2026-06-03 00:28:25] [WARN] Warm-up intento 30: ret=False, frame=None
+[2026-06-03 00:28:25] [CRÍTICO] No se pudo obtener imagen. cap.isOpened(): False, can_read: False
+[2026-06-03 00:28:25] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:28:25] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:28:25] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:28:25] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:28:25] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-03 00:32:11] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:32:11] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:32:12] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:32:13] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:32:13] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-03 00:34:57] [INFO] Cámara liberada correctamente.
+[2026-06-03 00:36:00] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:36:00] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:36:00] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:36:02] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:36:02] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-03 00:36:32] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:36:32] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:36:32] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:36:32] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:36:32] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-03 00:39:57] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:39:57] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-03 00:39:57] [INFO] Abriendo cámara IP (DroidCam)...
+[2026-06-03 00:39:58] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:39:58] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-03 00:40:56] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:40:56] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-03 00:40:56] [INFO] Abriendo cámara IP (DroidCam)...
+[2026-06-03 00:40:56] [INFO] Cámara liberada correctamente.
+[2026-06-03 00:40:57] [INFO] VideoCapture creado. cap.isOpened(): False
+[2026-06-03 00:40:57] [WARN] Warm-up intento 1: ret=False, frame=None
+[2026-06-03 00:40:57] [WARN] Warm-up intento 2: ret=False, frame=None
+[2026-06-03 00:40:57] [WARN] Warm-up intento 3: ret=False, frame=None
+[2026-06-03 00:40:57] [WARN] Warm-up intento 4: ret=False, frame=None
+[2026-06-03 00:40:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:57] [WARN] Warm-up intento 5: ret=False, frame=None
+[2026-06-03 00:40:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:57] [WARN] Warm-up intento 6: ret=False, frame=None
+[2026-06-03 00:40:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:57] [WARN] Warm-up intento 7: ret=False, frame=None
+[2026-06-03 00:40:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:57] [WARN] Warm-up intento 8: ret=False, frame=None
+[2026-06-03 00:40:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:57] [WARN] Warm-up intento 9: ret=False, frame=None
+[2026-06-03 00:40:57] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:58] [WARN] Warm-up intento 10: ret=False, frame=None
+[2026-06-03 00:40:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:58] [WARN] Warm-up intento 11: ret=False, frame=None
+[2026-06-03 00:40:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:58] [WARN] Warm-up intento 12: ret=False, frame=None
+[2026-06-03 00:40:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:58] [WARN] Warm-up intento 13: ret=False, frame=None
+[2026-06-03 00:40:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:58] [WARN] Warm-up intento 14: ret=False, frame=None
+[2026-06-03 00:40:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:58] [WARN] Warm-up intento 15: ret=False, frame=None
+[2026-06-03 00:40:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:58] [WARN] Warm-up intento 16: ret=False, frame=None
+[2026-06-03 00:40:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:58] [WARN] Warm-up intento 17: ret=False, frame=None
+[2026-06-03 00:40:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:58] [WARN] Warm-up intento 18: ret=False, frame=None
+[2026-06-03 00:40:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:58] [WARN] Warm-up intento 19: ret=False, frame=None
+[2026-06-03 00:40:58] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:59] [WARN] Warm-up intento 20: ret=False, frame=None
+[2026-06-03 00:40:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:59] [WARN] Warm-up intento 21: ret=False, frame=None
+[2026-06-03 00:40:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:59] [WARN] Warm-up intento 22: ret=False, frame=None
+[2026-06-03 00:40:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:59] [WARN] Warm-up intento 23: ret=False, frame=None
+[2026-06-03 00:40:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:59] [WARN] Warm-up intento 24: ret=False, frame=None
+[2026-06-03 00:40:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:59] [WARN] Warm-up intento 25: ret=False, frame=None
+[2026-06-03 00:40:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:59] [WARN] Warm-up intento 26: ret=False, frame=None
+[2026-06-03 00:40:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:59] [WARN] Warm-up intento 27: ret=False, frame=None
+[2026-06-03 00:40:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:59] [WARN] Warm-up intento 28: ret=False, frame=None
+[2026-06-03 00:40:59] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:40:59] [WARN] Warm-up intento 29: ret=False, frame=None
+[2026-06-03 00:41:00] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:00] [WARN] Warm-up intento 30: ret=False, frame=None
+[2026-06-03 00:41:00] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:00] [CRÍTICO] No se pudo obtener imagen. cap.isOpened(): False, can_read: False
+[2026-06-03 00:41:00] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:41:00] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:41:00] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:41:00] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:00] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:00] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:00] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:41:00] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-03 00:41:02] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:41:02] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:41:02] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:41:02] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:02] [INFO] VideoCapture creado. cap.isOpened(): False
+[2026-06-03 00:41:02] [WARN] Warm-up intento 1: ret=False, frame=None
+[2026-06-03 00:41:02] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:02] [WARN] Warm-up intento 2: ret=False, frame=None
+[2026-06-03 00:41:02] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:02] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:02] [WARN] Warm-up intento 3: ret=False, frame=None
+[2026-06-03 00:41:02] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:02] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:02] [WARN] Warm-up intento 4: ret=False, frame=None
+[2026-06-03 00:41:02] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] Warm-up intento 5: ret=False, frame=None
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] Warm-up intento 6: ret=False, frame=None
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] Warm-up intento 7: ret=False, frame=None
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] Warm-up intento 8: ret=False, frame=None
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] Warm-up intento 9: ret=False, frame=None
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] Warm-up intento 10: ret=False, frame=None
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] Warm-up intento 11: ret=False, frame=None
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] Warm-up intento 12: ret=False, frame=None
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] Warm-up intento 13: ret=False, frame=None
+ipal.
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] Warm-up intento 15: ret=False, frame=None
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] Warm-up intento 16: ret=False, frame=None
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] Warm-up intento 17: ret=False, frame=None
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] Warm-up intento 18: ret=False, frame=None
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] Warm-up intento 19: ret=False, frame=None
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] Warm-up intento 20: ret=False, frame=None
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] Warm-up intento 21: ret=False, frame=None
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] Warm-up intento 22: ret=False, frame=None
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] Warm-up intento 23: ret=False, frame=None
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:04] [WARN] Warm-up intento 24: ret=False, frame=None
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] Warm-up intento 25: ret=False, frame=None
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] Warm-up intento 26: ret=False, frame=None
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] Warm-up intento 27: ret=False, frame=None
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] Warm-up intento 28: ret=False, frame=None
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] Warm-up intento 29: ret=False, frame=None
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] Warm-up intento 30: ret=False, frame=None
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [CRÍTICO] No se pudo obtener imagen. cap.isOpened(): False, can_read: False
+[2026-06-03 00:41:05] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:41:05] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:41:05] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:06] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:41:06] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-03 00:41:07] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:41:07] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:41:07] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:41:07] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:41:08] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:08] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:08] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-03 00:41:09] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:41:12] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:41:12] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-03 00:41:12] [INFO] Abriendo cámara IP (DroidCam)...
+[2026-06-03 00:41:12] [INFO] VideoCapture creado. cap.isOpened(): False
+[2026-06-03 00:41:12] [WARN] Warm-up intento 1: ret=False, frame=None
+[2026-06-03 00:41:12] [WARN] Warm-up intento 2: ret=False, frame=None
+[2026-06-03 00:41:12] [WARN] Warm-up intento 3: ret=False, frame=None
+[2026-06-03 00:41:13] [WARN] Warm-up intento 4: ret=False, frame=None
+[2026-06-03 00:41:13] [WARN] Warm-up intento 5: ret=False, frame=None
+[2026-06-03 00:41:13] [WARN] Warm-up intento 6: ret=False, frame=None
+[2026-06-03 00:41:13] [WARN] Warm-up intento 7: ret=False, frame=None
+[2026-06-03 00:41:13] [WARN] Warm-up intento 8: ret=False, frame=None
+[2026-06-03 00:41:13] [WARN] Warm-up intento 9: ret=False, frame=None
+[2026-06-03 00:41:13] [WARN] Warm-up intento 10: ret=False, frame=None
+[2026-06-03 00:41:13] [WARN] Warm-up intento 11: ret=False, frame=None
+[2026-06-03 00:41:13] [WARN] Warm-up intento 12: ret=False, frame=None
+[2026-06-03 00:41:13] [WARN] Warm-up intento 13: ret=False, frame=None
+[2026-06-03 00:41:14] [WARN] Warm-up intento 14: ret=False, frame=None
+[2026-06-03 00:41:14] [WARN] Warm-up intento 15: ret=False, frame=None
+[2026-06-03 00:41:14] [WARN] Warm-up intento 16: ret=False, frame=None
+[2026-06-03 00:41:14] [WARN] Warm-up intento 17: ret=False, frame=None
+[2026-06-03 00:41:14] [WARN] Warm-up intento 18: ret=False, frame=None
+[2026-06-03 00:41:14] [WARN] Warm-up intento 19: ret=False, frame=None
+[2026-06-03 00:41:14] [WARN] Warm-up intento 20: ret=False, frame=None
+[2026-06-03 00:41:14] [WARN] Warm-up intento 21: ret=False, frame=None
+[2026-06-03 00:41:14] [WARN] Warm-up intento 22: ret=False, frame=None
+[2026-06-03 00:41:14] [WARN] Warm-up intento 23: ret=False, frame=None
+[2026-06-03 00:41:15] [WARN] Warm-up intento 24: ret=False, frame=None
+[2026-06-03 00:41:15] [WARN] Warm-up intento 25: ret=False, frame=None
+[2026-06-03 00:41:15] [WARN] Warm-up intento 26: ret=False, frame=None
+[2026-06-03 00:41:15] [WARN] Warm-up intento 27: ret=False, frame=None
+[2026-06-03 00:41:15] [WARN] Warm-up intento 28: ret=False, frame=None
+[2026-06-03 00:41:15] [WARN] Warm-up intento 29: ret=False, frame=None
+[2026-06-03 00:41:15] [WARN] Warm-up intento 30: ret=False, frame=None
+[2026-06-03 00:41:15] [CRÍTICO] No se pudo obtener imagen. cap.isOpened(): False, can_read: False
+[2026-06-03 00:41:15] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:41:15] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:41:15] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:41:15] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:41:15] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-03 00:43:33] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:43:33] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:43:33] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:43:34] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:43:35] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-03 00:44:02] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:44:02] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:44:02] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:44:02] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:44:03] [INFO] Cámara liberada correctamente.
+[2026-06-03 00:44:03] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-03 00:44:03] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:04] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:05] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:06] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:06] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:06] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:06] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:06] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:06] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:06] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:06] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:06] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:06] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:07] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:07] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:07] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:07] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:07] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:07] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:07] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:07] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:07] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:07] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:08] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:08] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:08] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:08] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:08] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:08] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:08] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:08] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:08] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:09] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:09] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:09] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:09] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:09] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:09] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:09] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:09] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:09] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:09] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:10] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:10] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:10] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:10] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:10] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:10] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:10] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:10] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:10] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:10] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:11] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:11] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:11] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:11] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:11] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:11] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:11] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:11] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:11] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:12] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:12] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:12] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:12] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:12] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:12] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:12] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:12] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:12] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:12] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:13] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:13] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:13] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:13] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:13] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:13] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:13] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:13] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:13] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:13] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:14] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:14] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:14] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:14] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:14] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:14] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:14] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:14] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:14] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:15] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:15] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:15] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:15] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:15] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:15] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:15] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:15] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:15] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:15] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:16] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:16] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:16] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:16] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:16] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:16] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:16] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:16] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:16] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:16] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:17] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:17] [WARN] cap.read() retornó False en el ciclo principal.
+[2026-06-03 00:44:17] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:44:17] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-03 00:44:17] [INFO] Abriendo cámara IP (DroidCam)...
+[2026-06-03 00:44:17] [INFO] Cámara liberada correctamente.
+[2026-06-03 00:44:18] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:44:18] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-03 00:44:41] [INFO] Cámara liberada correctamente.
+[2026-06-03 00:44:41] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:44:41] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:44:41] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:44:42] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:44:42] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-03 00:44:50] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:44:50] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-03 00:44:50] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-03 00:44:50] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:44:50] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-03 00:44:50] [WARN] Error al liberar hardware de cámara: Unknown C++ exception from OpenCV code
+[2026-06-03 00:45:01] === INICIANDO HILO DE CÁMARA ===
+[2026-06-03 00:45:01] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-03 00:45:01] [INFO] Abriendo cámara IP (DroidCam)...
+[2026-06-03 00:45:02] [INFO] Cámara liberada correctamente.
+[2026-06-03 00:45:02] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-03 00:45:02] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-06 11:00:04] === INICIANDO HILO DE CÁMARA ===
+[2026-06-06 11:00:04] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-06 11:00:04] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-06 11:00:05] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-06 11:00:05] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-06 11:07:50] === INICIANDO HILO DE CÁMARA ===
+[2026-06-06 11:07:50] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-06 11:07:50] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-06 11:07:52] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-06 11:07:52] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-18 22:30:06] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:30:06] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-18 22:30:06] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-18 22:30:08] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:30:08] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-18 22:32:11] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:32:11] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-18 22:32:11] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-18 22:32:11] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:32:11] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-18 22:32:11] [INFO] Cámara liberada correctamente.
+[2026-06-18 22:32:28] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:32:28] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-18 22:32:28] [INFO] Abriendo cámara IP (DroidCam)...
+[2026-06-18 22:32:30] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:32:30] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-18 22:32:30] [INFO] Abriendo cámara IP (DroidCam)...
+[2026-06-18 22:32:31] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:32:32] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-18 22:32:32] [INFO] Cámara liberada correctamente.
+[2026-06-18 22:32:41] [INFO] VideoCapture creado. cap.isOpened(): False
+[2026-06-18 22:32:41] [WARN] Warm-up intento 1: ret=False, frame=None
+[2026-06-18 22:32:41] [WARN] Warm-up intento 2: ret=False, frame=None
+[2026-06-18 22:32:41] [WARN] Warm-up intento 3: ret=False, frame=None
+[2026-06-18 22:32:41] [WARN] Warm-up intento 4: ret=False, frame=None
+[2026-06-18 22:32:41] [WARN] Warm-up intento 5: ret=False, frame=None
+[2026-06-18 22:32:41] [WARN] Warm-up intento 6: ret=False, frame=None
+[2026-06-18 22:32:41] [WARN] Warm-up intento 7: ret=False, frame=None
+[2026-06-18 22:32:41] [WARN] Warm-up intento 8: ret=False, frame=None
+[2026-06-18 22:32:42] [WARN] Warm-up intento 9: ret=False, frame=None
+[2026-06-18 22:32:42] [WARN] Warm-up intento 10: ret=False, frame=None
+[2026-06-18 22:32:42] [WARN] Warm-up intento 11: ret=False, frame=None
+[2026-06-18 22:32:42] [WARN] Warm-up intento 12: ret=False, frame=None
+[2026-06-18 22:32:42] [WARN] Warm-up intento 13: ret=False, frame=None
+[2026-06-18 22:32:42] [WARN] Warm-up intento 14: ret=False, frame=None
+[2026-06-18 22:32:42] [WARN] Warm-up intento 15: ret=False, frame=None
+[2026-06-18 22:32:42] [WARN] Warm-up intento 16: ret=False, frame=None
+[2026-06-18 22:32:43] [WARN] Warm-up intento 17: ret=False, frame=None
+[2026-06-18 22:32:43] [WARN] Warm-up intento 18: ret=False, frame=None
+[2026-06-18 22:32:43] [WARN] Warm-up intento 19: ret=False, frame=None
+[2026-06-18 22:32:43] [WARN] Warm-up intento 20: ret=False, frame=None
+[2026-06-18 22:32:43] [WARN] Warm-up intento 21: ret=False, frame=None
+[2026-06-18 22:32:43] [WARN] Warm-up intento 22: ret=False, frame=None
+[2026-06-18 22:32:43] [WARN] Warm-up intento 23: ret=False, frame=None
+[2026-06-18 22:32:43] [WARN] Warm-up intento 24: ret=False, frame=None
+[2026-06-18 22:32:43] [WARN] Warm-up intento 25: ret=False, frame=None
+[2026-06-18 22:32:44] [WARN] Warm-up intento 26: ret=False, frame=None
+[2026-06-18 22:32:44] [WARN] Warm-up intento 27: ret=False, frame=None
+[2026-06-18 22:32:44] [WARN] Warm-up intento 28: ret=False, frame=None
+[2026-06-18 22:32:44] [WARN] Warm-up intento 29: ret=False, frame=None
+[2026-06-18 22:32:44] [WARN] Warm-up intento 30: ret=False, frame=None
+[2026-06-18 22:32:44] [CRÍTICO] No se pudo obtener imagen. cap.isOpened(): False, can_read: False
+[2026-06-18 22:32:44] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:32:44] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-18 22:32:44] [INFO] Abriendo cámara IP (DroidCam)...
+[2026-06-18 22:32:46] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:32:46] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-18 22:33:02] [INFO] Cámara liberada correctamente.
+[2026-06-18 22:33:02] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:33:02] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-18 22:33:02] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-18 22:33:05] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:33:05] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-18 22:33:27] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:33:27] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-18 22:33:27] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-18 22:33:27] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:33:27] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-18 22:33:27] [INFO] Cámara liberada correctamente.
+[2026-06-18 22:33:43] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:33:43] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-18 22:33:43] [INFO] Abriendo cámara IP (DroidCam)...
+[2026-06-18 22:33:44] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:33:44] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-18 22:34:13] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:34:13] [INFO] Cámara liberada correctamente.
+[2026-06-18 22:34:13] [INFO] camera_index: http://192.168.1.11:4747/video | tipo: <class 'str'>
+[2026-06-18 22:34:13] [INFO] Abriendo cámara IP (DroidCam)...
+[2026-06-18 22:34:17] [INFO] VideoCapture creado. cap.isOpened(): False
+[2026-06-18 22:34:17] [WARN] Warm-up intento 1: ret=False, frame=None
+[2026-06-18 22:34:17] [WARN] Warm-up intento 2: ret=False, frame=None
+[2026-06-18 22:34:17] [WARN] Warm-up intento 3: ret=False, frame=None
+[2026-06-18 22:34:17] [WARN] Warm-up intento 4: ret=False, frame=None
+[2026-06-18 22:34:17] [WARN] Warm-up intento 5: ret=False, frame=None
+[2026-06-18 22:34:17] [WARN] Warm-up intento 6: ret=False, frame=None
+[2026-06-18 22:34:17] [WARN] Warm-up intento 7: ret=False, frame=None
+[2026-06-18 22:34:18] [WARN] Warm-up intento 8: ret=False, frame=None
+[2026-06-18 22:34:18] [WARN] Warm-up intento 9: ret=False, frame=None
+[2026-06-18 22:34:18] [WARN] Warm-up intento 10: ret=False, frame=None
+[2026-06-18 22:34:18] [WARN] Warm-up intento 11: ret=False, frame=None
+[2026-06-18 22:34:18] [WARN] Warm-up intento 12: ret=False, frame=None
+[2026-06-18 22:34:18] [WARN] Warm-up intento 13: ret=False, frame=None
+[2026-06-18 22:34:18] [WARN] Warm-up intento 14: ret=False, frame=None
+[2026-06-18 22:34:18] [WARN] Warm-up intento 15: ret=False, frame=None
+[2026-06-18 22:34:18] [WARN] Warm-up intento 16: ret=False, frame=None
+[2026-06-18 22:34:19] [WARN] Warm-up intento 17: ret=False, frame=None
+[2026-06-18 22:34:19] [WARN] Warm-up intento 18: ret=False, frame=None
+[2026-06-18 22:34:19] [WARN] Warm-up intento 19: ret=False, frame=None
+[2026-06-18 22:34:19] [WARN] Warm-up intento 20: ret=False, frame=None
+[2026-06-18 22:34:19] [WARN] Warm-up intento 21: ret=False, frame=None
+[2026-06-18 22:34:19] [WARN] Warm-up intento 22: ret=False, frame=None
+[2026-06-18 22:34:19] [WARN] Warm-up intento 23: ret=False, frame=None
+[2026-06-18 22:34:19] [WARN] Warm-up intento 24: ret=False, frame=None
+[2026-06-18 22:34:19] [WARN] Warm-up intento 25: ret=False, frame=None
+[2026-06-18 22:34:19] [WARN] Warm-up intento 26: ret=False, frame=None
+[2026-06-18 22:34:20] [WARN] Warm-up intento 27: ret=False, frame=None
+[2026-06-18 22:34:20] [WARN] Warm-up intento 28: ret=False, frame=None
+[2026-06-18 22:34:20] [WARN] Warm-up intento 29: ret=False, frame=None
+[2026-06-18 22:34:20] [WARN] Warm-up intento 30: ret=False, frame=None
+[2026-06-18 22:34:20] [CRÍTICO] No se pudo obtener imagen. cap.isOpened(): False, can_read: False
+[2026-06-18 22:34:20] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:34:20] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-18 22:34:20] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-18 22:34:20] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:34:21] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-18 22:34:38] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:34:38] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-18 22:34:38] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-18 22:34:38] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:34:38] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-18 22:34:39] [INFO] Cámara liberada correctamente.
+[2026-06-18 22:35:15] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:35:15] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-18 22:35:15] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-18 22:35:17] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:35:17] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-18 22:37:28] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:37:28] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-18 22:37:28] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-18 22:37:28] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:37:28] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-18 22:37:28] [INFO] Cámara liberada correctamente.
+[2026-06-18 22:37:44] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:37:44] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-18 22:37:44] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-18 22:37:45] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:37:46] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-18 22:39:09] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:39:09] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-18 22:39:09] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-18 22:39:09] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:39:09] [OK] Warm-up exitoso en intento 1. Frame shape: (720, 1280, 3)
+[2026-06-18 22:44:05] === INICIANDO HILO DE CÁMARA ===
+[2026-06-18 22:44:05] [INFO] camera_index: 0 | tipo: <class 'int'>
+[2026-06-18 22:44:05] [INFO] Abriendo cámara local con CAP_DSHOW...
+[2026-06-18 22:44:07] [INFO] VideoCapture creado. cap.isOpened(): True
+[2026-06-18 22:44:07] [OK] Warm-up exitoso en intento 1. Frame shape: (480, 640, 3)
+[2026-06-18 22:45:34] [INFO] Cámara liberada correctamente.

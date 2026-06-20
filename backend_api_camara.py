@@ -156,6 +156,61 @@ def compute_face_similarity(embedding1: np.ndarray, embedding2: np.ndarray) -> f
 # =======================================================
 # 🚀 ENDPOINT INICIO DE SESIÓN FACIAL (REAL Y COMPACTO)
 # =======================================================
+@app.post("/api/register-face")
+async def register_face(request: Request, db: Session = Depends(get_db)):
+    try:
+        data = await request.json()
+        correo = data.get("correo")
+        imagen_b64 = data.get("image_base64")
+
+        if not correo or not imagen_b64:
+            raise HTTPException(status_code=400, detail="Faltan parámetros requeridos (correo o imagen).")
+
+        usuario = db.query(Usuario).filter(Usuario.correo == correo).first()
+        if not usuario:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado en la base de datos.")
+
+        # Manejo más seguro del formato Base64
+        if ',' in imagen_b64:
+            _, imgstr = imagen_b64.split(';base64,')
+        else:
+            imgstr = imagen_b64
+            
+        image_bytes = base64.b64decode(imgstr)
+        np_arr = np.frombuffer(image_bytes, np.uint8)
+        frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+        if frame is None:
+            raise HTTPException(status_code=400, detail="No se pudo decodificar la imagen de la cámara.")
+
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(80, 80))
+
+        if len(faces) == 0:
+            raise HTTPException(status_code=400, detail="No se detectó rostro en la captura. Intenta de nuevo.")
+
+        (x, y, w, h) = faces[0]
+        rostro_capturado = gray[y:y+h, x:x+w]
+        rostro_estandarizado = cv2.resize(rostro_capturado, (150, 150))
+        embedding_bytes = rostro_estandarizado.tobytes()
+        
+        usuario.face_embedding = embedding_bytes
+        db.commit()
+
+        print(f"[FACE_SUCCESS]: Rostro registrado para {correo}")
+        
+        return {
+            "status": "ok", 
+            "message": "Rostro enrolado correctamente."
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[FACE_ERROR]: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error al registrar rostro: {str(e)}")
+
+
 @app.post("/api/login-face")
 async def login_face(request: Request, db: Session = Depends(get_db)):
     try:
@@ -197,7 +252,7 @@ async def login_face(request: Request, db: Session = Depends(get_db)):
         
         similitud = compute_face_similarity(embedding_actual, embedding_guardado)
         
-        UMBRAL_MINIMO = 0.43
+        UMBRAL_MINIMO = 0.25
         print(f"[FACE_AUTH]: {correo} | Similitud: {similitud:.2%} | Umbral: {UMBRAL_MINIMO:.2%}")
         
         if similitud < UMBRAL_MINIMO:
