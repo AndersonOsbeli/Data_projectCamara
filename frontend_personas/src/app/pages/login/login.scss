@@ -9,9 +9,9 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: radial-gradient(circle at top right, rgba(81, 66, 245, 0.25), transparent 55%),
-    radial-gradient(circle at bottom left, rgba(245, 66, 164, 0.2), transparent 55%);
-  background-color: #0d0f23;
+  background: url('/login-bg.png') no-repeat center center;
+  background-size: cover;
+  background-color: #0d0f23; /* Fallback */
   width: 100vw;
   position: fixed;
   top: 0;
